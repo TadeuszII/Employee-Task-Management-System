@@ -1,0 +1,146 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: arial, sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: black;
+    color: white;
+}
+
+.u-name {
+    font-size: 20px;
+    padding-left: 17px;
+}
+
+/* --- Color of "SIDE BAR" --- */
+.u-name b {
+    color: rgb(134, 192, 255);
+}
+
+.header i {
+    cursor: pointer;
+    color: white;
+    transition: color 0.3s ease;
+}
+
+.header i:hover {
+    color: blue;
+}
+
+.user-p {
+    text-align: center;
+    padding-left: 0;
+    padding-top: 25px;
+
+}
+
+.user-p img {
+    width: 100px;
+    border-radius: 50%;
+}
+
+.user-p h4 {
+    color: rgb(255, 255, 255);
+    padding: 5px 0;
+}
+
+.side-bar {
+    width: 250px;
+    background: #262931;
+    min-height: 100vh;
+    transition: 500ms width;
+    
+}
+
+.body {
+    display: flex;
+}
+
+.section-1 {
+    width: 100%;
+    background: url("/images/background/wil-stewart-RpDA3uYkJWM-unsplash.jpg");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center
+}
+
+.section-1 h1 {
+    color: white;
+    font-size: 60px;
+    text-transform: uppercase;
+}
+
+.section-1 p {
+    color: white;
+    background: rgb(208, 186, 147);
+    font-size: 20;
+    padding: 7px;
+    border-radius: 5px;
+}
+
+
+.side-bar ul{    
+    margin-top: 20px;
+    list-style: none;
+}
+
+
+.side-bar ul li{    
+    font-size: 16px;
+    padding: 15px;
+    list-style: none;
+    padding-left: 20px;
+    transition: 500ms background;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+}
+
+.side-bar ul li:hover{
+    background: royalblue;
+}
+
+.side-bar ul li a {
+    text-decoration: none;
+    color: white;
+    cursor: pointer;
+    letter-spacing: 1px;
+}
+
+.side-bar ul li a i{
+    display: inline-block;
+    padding-right: 10px;
+    font-size: 23;
+}
+
+#navbtn {
+    display: inline-block;
+    margin-left: 70px;
+    font-size: 20px;
+    transition: 500ms color;
+}
+
+#checkbox{
+    display: none;
+}
+
+#checkbox:checked ~ .body .side-bar{
+    width: 60px;
+}
+#checkbox:checked ~ .body .side-bar .user-p{
+    visibility: hidden;
+}
+#checkbox:checked ~ .body .side-bar a span{
+    display: none;
+}
