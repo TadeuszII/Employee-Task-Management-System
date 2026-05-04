@@ -1,3 +1,5 @@
+/*------ index.php ------*/
+
 * {
     padding: 0;
     margin: 0;
@@ -63,31 +65,6 @@
     display: flex;
 }
 
-.section-1 {
-    width: 100%;
-    background: url("/images/background/wil-stewart-RpDA3uYkJWM-unsplash.jpg");
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center
-}
-
-.section-1 h1 {
-    color: white;
-    font-size: 60px;
-    text-transform: uppercase;
-}
-
-.section-1 p {
-    color: white;
-    background: rgb(208, 186, 147);
-    font-size: 20;
-    padding: 7px;
-    border-radius: 5px;
-}
-
 
 .side-bar ul{    
     margin-top: 20px;
@@ -111,6 +88,10 @@
     background: royalblue;
 }
 
+.side-bar ul li.active{
+    background: royalblue;
+}
+
 .side-bar ul li a {
     text-decoration: none;
     color: white;
@@ -121,7 +102,7 @@
 .side-bar ul li a i{
     display: inline-block;
     padding-right: 10px;
-    font-size: 23;
+    font-size: 23px;
 }
 
 #navbtn {
@@ -143,4 +124,20 @@
 }
 #checkbox:checked ~ .body .side-bar a span{
     display: none;
+}
+
+
+/* ------ login.php ------*/
+.login-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    min-height: 100vh;
+}
+
+/* ---- Login display ----*/
+.login-body form{
+    max-width: 400px;
+    width: 90%;
 }
