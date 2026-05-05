@@ -1,5 +1,5 @@
 <header class="header">
-    <h2 class="u-name"><b>E</b>.T.M.S>
+    <h2 class="u-name"><b>E</b>.T.M.S
         <label for="checkbox">
             <i id="navbtn" class="fa-solid fa-bars"></i>
         </label>

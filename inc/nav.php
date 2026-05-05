@@ -47,14 +47,14 @@
         <?php } else { // If the user is not an employee, assume they are an admin
         ?>
             <!--- Admin Navigation Bar-->
-            <ul>
+            <ul id="navList">
                 <li>
                     <a href="#">
                         <i class="fa-solid fa-computer" aria-hidden="true"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <li class="active">
+                <li>
                     <a href="manage_users.php">
                         <i class="fa-solid fa-users"></i>
                         <span>Manage Users</span>
@@ -68,7 +68,7 @@
                 </li>
                 <li>
                     <a href="all_tasks.php">
-                        <i class="fa-solid fa-bell"></i>
+                        <i class="fa-solid fa-tasks"></i>
                         <span>All Tasks</span>
                     </a>
                 </li>
