@@ -18,7 +18,7 @@ if (isset($_POST['user_name']) && isset($_POST['password'])) {
     $password = validate_input($_POST['password']);
 
     if (empty($user_name)) { // Check if the username field is empty
-        $error_message = "User name is required";
+        $error_message = "Username is required";
         header('Location: ../login.php?error=' . $error_message);
         exit();
     } else if (empty($password)) { // Check if the password field is empty

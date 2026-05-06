@@ -4,16 +4,31 @@ session_start(); // Start the session to access session variables
 
 if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user is logged in by verifying session variables
 
+    include "DB_connection.php"; // Include the database connection file
+    include "app/Model/user.php"; // Include the user model file to access user-related functions
 
+    if (!isset($_GET['id'])) {
+        header('Location: user.php' . $error_message);
+        exit();
+    }
+    $id = $_GET['id'];
+    
+    $user = get_user_by_id($conn, $id); // Retrieve all users from the database "employee"
+    
+    if ($user == 0) {
+         $error_message = "User not found";
+        header('Location: user.php' . $error_message);
+        exit();
+    }
 
-?>
+?>  
     <!DOCTYPE html>
     <html lang="en">
 
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Add User</title>
+        <title>Edit User</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         <link rel="stylesheet" href="css/style.css">
 
@@ -27,10 +42,10 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
 
             <?php include "inc/nav.php"; ?> <!-- Include the navigation -->
             <section class="section-1">
-                <h4 class="title">Add User <a href="manage_users.php">Users</a></h4>
+                <h4 class="title">Edit User <a href="manage_users.php">Users</a></h4>
 
                 <form class="form-1"
-                    action="app/add-user.php"
+                    action="app/update-user.php"
                     method="POST">
 
                     <!-- Error Message -->
@@ -48,17 +63,17 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
                     <?php }?>
 
                     <div class="input-holder">
-                        <input type="text" name="full_name" class="input-1" placeholder="Full Name"><br><br>
+                        <input type="text" name="full_name" value="<?=$user["full_name"] ?>" class="input-1" placeholder="Full Name"><br><br>
                     </div>
 
                     <div class="form-1">
-                        <input type="text" name="user_name" class="input-1" placeholder="Username"><br><br>
+                        <input type="text" name="user_name" value="<?=$user["username"] ?>" class="input-1" placeholder="Username"><br><br>
                     </div>
                     <div class="form-1">
-                        <input type="text" name="password" class="input-1" placeholder="Password"><br><br>
+                        <input type="text" name="password" value="*************" class="input-1" placeholder="Password"><br><br>
                     </div>
-
-                    <button class="edit-btn">Add User</button>
+                    <input type="text" name="id" value="<?=$user["id"]?>" hidden> 
+                    <button class="edit-btn">Update</button>
                 </form>
             </section>
 
