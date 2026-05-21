@@ -8,7 +8,8 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
     include "app/Model/user.php"; // Include the user model file to access user-related functions
 
     if (!isset($_GET['id'])) {
-        header('Location: user.php' . $error_message);
+        $error_message = "User id is required";
+        header('Location: manage_users.php?error=' . $error_message);
         exit();
     }
     $id = $_GET['id'];
@@ -17,7 +18,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
     
     if ($user == 0) {
          $error_message = "User not found";
-        header('Location: user.php' . $error_message);
+        header('Location: manage_users.php?error=' . $error_message);
         exit();
     }
 
@@ -90,7 +91,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
 
 <?php } else {
     $error_message = "Login at first";
-    header('Location: ../login.php?error=' . $error_message);
+    header('Location: login.php?error=' . $error_message);
     exit();
 }
 ?>

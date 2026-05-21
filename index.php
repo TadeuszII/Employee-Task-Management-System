@@ -25,6 +25,12 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
 
             <?php include "inc/nav.php"; ?> <!-- Include the navigation -->
             <section class="section-1">
+            
+            
+
+
+            
+            
 
             </section>
         </div>
@@ -36,7 +42,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
 
 <?php } else {
     $error_message = "Login at first";
-    header('Location: ../login.php?error=' . $error_message);
+    header('Location: login.php?error=' . $error_message);
     exit();
 }
 ?>

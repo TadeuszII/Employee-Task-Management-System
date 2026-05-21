@@ -33,6 +33,15 @@ function update_user($conn, $data){
 }
 
 
+# ---- To delete user from the database ----
+
+function delete_user($conn, $data){
+    $sql = "DELETE FROM user WHERE id =? AND role = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute($data);
+}
+
+
 # ---- To get user data by id from database in edit ----
 
 function get_user_by_id($conn, $id){

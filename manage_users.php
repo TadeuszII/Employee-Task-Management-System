@@ -33,6 +33,13 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
             <section class="section-1">
                 <h4 class="title">Manage Users <a href="add-user.php">Add User</a></h4>
 
+                 <?php
+                    if (isset($_GET['success'])) { ?>
+                        <div class="success" role="alert">
+                            <?php echo stripcslashes($_GET['success']); ?>
+                        </div>
+                    <?php }?>
+
                 <?php if ($users != 0) { ?>
 
                     <table class="main-table">
@@ -77,7 +84,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
 
 <?php } else {
     $error_message = "Login at first";
-    header('Location: ../login.php?error=' . $error_message);
+    header('Location: login.php?error=' . $error_message);
     exit();
 }
 ?>
