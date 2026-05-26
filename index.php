@@ -40,6 +40,11 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
 
     </html>
 
+    <script type="text/javascript">
+        var active = document.querySelector("#navList li:nth-child(1)"); // Select the second list item in the navigation list
+        active.classList.add("active"); // Add the "active" class to the selected list item
+    </script>
+
 <?php } else {
     $error_message = "Login at first";
     header('Location: login.php?error=' . $error_message);

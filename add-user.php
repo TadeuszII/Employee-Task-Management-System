@@ -2,7 +2,7 @@
 
 session_start(); // Start the session to access session variables
 
-if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user is logged in by verifying session variables
+if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == 'admin') { // Check if the user is logged in by verifying session variables
 
 
 

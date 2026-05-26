@@ -57,3 +57,10 @@ function get_user_by_id($conn, $id){
     }
     return $user;
 }
+
+function update_profile($conn, $data){
+    $sql = "UPDATE user SET full_name = ?, password = ? WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute($data);
+
+}

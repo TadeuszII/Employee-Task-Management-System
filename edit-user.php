@@ -2,7 +2,7 @@
 
 session_start(); // Start the session to access session variables
 
-if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user is logged in by verifying session variables
+if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == 'admin') { // Check if the user is logged in by verifying session variables
 
     include "DB_connection.php"; // Include the database connection file
     include "app/Model/user.php"; // Include the user model file to access user-related functions
@@ -71,7 +71,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
                         <input type="text" name="user_name" value="<?=$user["username"] ?>" class="input-1" placeholder="Username"><br><br>
                     </div>
                     <div class="form-1">
-                        <input type="text" name="password" value="*************" class="input-1" placeholder="Password"><br><br>
+                        <input type="text" name="password"  class="input-1" placeholder="Password"><br><br>
                     </div>
                     <input type="text" name="id" value="<?=$user["id"]?>" hidden> 
                     <button class="edit-btn">Update</button>

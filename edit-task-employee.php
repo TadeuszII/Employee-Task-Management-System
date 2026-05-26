@@ -2,7 +2,7 @@
 
 session_start(); // Start the session to access session variables
 
-if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == 'admin') { // Check if the user is logged in by verifying session variables
+if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == 'employee') { // Check if the user is logged in by verifying session variables
 
     include "DB_connection.php"; // Include the database connection file
     include "app/Model/task.php"; // Include the user model file to access user-related functions
@@ -45,10 +45,10 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
             <?php include "inc/nav.php"; ?> <!-- Include the navigation -->
             <section class="section-1">
-                <h4 class="title">Edit Task <a href="all_tasks.php">Tasks</a></h4>
+                <h4 class="title">Edit Task <a href="my_tasks.php">Tasks</a></h4>
 
                 <form class="form-1"
-                    action="app/update-task.php"
+                    action="app/update-task-employee.php"
                     method="POST">
 
                     <!-- Error Message -->
@@ -66,23 +66,20 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                     <?php }?>
         
                     <div class="input-holder">
-                        <input type="text" name="title" class="input-1" value="<?=$task["title"] ?>" placeholder="Task Title"><br><br>
+                        <label for="title">Title</label>
+                        <input type="text" name="title" class="input-1" value="<?=$task["title"] ?>"  readonly placeholder="Task Title"><br><br>
                     </div>
                     <div class="input-holder">
-                        <textarea name="description" class="input-1" placeholder="Task Description"><?=$task["description"] ?></textarea><br><br>
+                        <!-- Make textarea read only-->
+                        <label for="description">Description</label>
+                        <textarea name="description" class="input-1" placeholder="Task Description" readonly><?=$task["description"] ?></textarea><br>
                     </div>
                     <div class="input-holder">
-                        <label for="due_date">Due Date: </label>
-                        <input type="date" name="due_date" class="input-1" value="<?=$task["due_date"] ?>"><br><br>
-                    </div>
-                    <div class="input-holder">
-                        <select name="assigned_to" class="input-1">
-                            <option value="0">Select Employee</option>
-                            <?php 
-                            if ($users != 0)
-                                foreach($users as $user) { ?>
-                                    <option value="<?=$user['id']?>" <?php echo ($task['assigned_to'] == $user['id']) ? 'selected' : ''; ?>><?=$user['full_name']?></option>
-                            <?php } ?>
+                        <label for="status">Status</label>
+                        <select name="status" class="input-1">
+                            <option value="pending" <?php echo ($task['STATUS'] == 'pending') ? 'selected' : ''; ?>>Pending</option>
+                            <option value="in_progress" <?php echo ($task['STATUS'] == 'in_progress') ? 'selected' : ''; ?>>In Progress</option>
+                            <option value="completed" <?php echo ($task['STATUS'] == 'completed') ? 'selected' : ''; ?>>Completed</option>
                         </select><br><br>
                     </div>
                     <input type="hidden" name="id" value="<?=$task['id']?>">
@@ -94,7 +91,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
 
         <script type="text/javascript">
-            var active = document.querySelector("#navList li:nth-child(4)"); // Select the second list item in the navigation list
+            var active = document.querySelector("#navList li:nth-child(2)"); // Select the second list item in the navigation list
             active.classList.add("active"); // Add the "active" class to the selected list item
         </script>
     </body>

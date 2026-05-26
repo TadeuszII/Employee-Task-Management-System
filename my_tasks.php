@@ -2,15 +2,16 @@
 
 session_start(); // Start the session to access session variables
 
-if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == 'admin') { // Check if the user is logged in by verifying session variables
+if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user is logged in by verifying session variables
 
     include "DB_connection.php"; // Include the database connection file
     include "app/Model/task.php"; // Include the task model file to access task-related functions
     include "app/Model/user.php"; // Include the user model file to access user-related functions
 
-    $tasks = get_all_tasks($conn); // Retrieve all tasks from the database
-    $num_tasks = count($tasks); // Count the number of tasks retrieved
-    $users = get_all_users($conn); // Retrieve all users from the database "employee"
+    $tasks = get_all_tasks_by_id($conn, $_SESSION['id']); // Retrieve all tasks from the database for the current user
+
+    // I think maybe add that user can see who assigned to him task
+    //$users = get_all_users($conn); // Retrieve all users from the database "employee"
 
 
 ?>
@@ -34,7 +35,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
             <?php include "inc/nav.php"; ?> <!-- Include the navigation -->
             <section class="section-1">
-                <h4 class="title">All Tasks (<?php echo $num_tasks; ?>) <a href="create_task.php">Create Task</a></h4>
+                <h4 class="title">My Tasks</h4>
 
                  <?php
                     if (isset($_GET['success'])) { ?>
@@ -50,10 +51,12 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                             <th>#</th>
                             <th>Title</th>
                             <th>Description</th>
-                            <th>Assigned To</th>
                             <th>Due Date</th>
                             <th>Status</th>
                             <th>Action</th>
+                            <!-- Idea to changed it to who assigned -->
+                            <!-- <th>Assigned To</th> -->
+                            
                         </tr>
 
                         <?php $i=0; foreach($tasks as $task) { ?>
@@ -62,22 +65,20 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                             <td><?=++$i?></td>
                             <td><?=$task['title'] ?></td>
                             <td><?=$task['description'] ?></td>
+                            <td><?=$task['due_date'] ?></td>
+                            <td><?=$task['STATUS'] ?></td>
                             <!-- lets show to who assigned full_name of user -->
-                            <td>
+                            <!-- <td>
                                 <?php
-                                    foreach($users as $user){
-                                        if($user['id'] == $task['assigned_to']){
-                                            echo $user['full_name'];
-                                        }
-                                    }
+                                    // foreach($users as $user){
+                                    //     if($user['id'] == $task['assigned_to']){
+                                    //         echo $user['full_name'];
+                                    //     }
+                                    // }
                                 ?>
-                            </td>
-                            
-                            <td><?=$task['due_date']  ?></td>
-                            <td><?=$task['STATUS']  ?></td>
+                            </td> -->
                             <td>
-                                <a href="edit-task.php?id=<?=$task['id']?>" class="edit-btn">Edit</a> <!-- Link to edit task with id task -->
-                                <a href="delete-task.php?id=<?=$task['id']?>" class="delete-btn">Delete</a> <!-- Link to delete task with id task -->
+                                <a href="edit-task-employee.php?id=<?=$task['id']?>" class="edit-btn">Edit</a> <!-- Link to edit task with id task -->
                             </td>
                         </tr>
                         <?php } ?>
@@ -92,7 +93,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
 
         <script type="text/javascript">
-            var active = document.querySelector("#navList li:nth-child(4)"); // Select the second list item in the navigation list
+            var active = document.querySelector("#navList li:nth-child(2)"); // Select the second list item in the navigation list
             active.classList.add("active"); // Add the "active" class to the selected list item
         </script>
     </body>

@@ -2,22 +2,21 @@
 
 session_start(); // Start the session to access session variables
 
-if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == 'admin') { // Check if the user is logged in by verifying session variables
+if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == 'employee') { // Check if the user is logged in by verifying session variables
 
     include "DB_connection.php"; // Include the database connection file
     include "app/Model/user.php"; // Include the user model file to access user-related functions
 
-    $users = get_all_users($conn); // Retrieve all users from the database "employee"
-
-
-?>
+    $user = get_user_by_id($conn, $_SESSION['id']); // Retrieve the task from the database "employee"
+    
+?>  
     <!DOCTYPE html>
     <html lang="en">
 
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Create Task</title>
+        <title>Profile</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         <link rel="stylesheet" href="css/style.css">
 
@@ -31,10 +30,10 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
             <?php include "inc/nav.php"; ?> <!-- Include the navigation -->
             <section class="section-1">
-                <h4 class="title">Create Task</h4>
-
+                <h4 class="title">Edit Profile <a href="profile.php">Profile</a></h4>
+                
                 <form class="form-1"
-                    action="app/add-task.php"
+                    action="app/update-profile.php"
                     method="POST">
 
                     <!-- Error Message -->
@@ -52,35 +51,32 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                     <?php }?>
 
                     <div class="input-holder">
-                        <input type="text" name="title" class="input-1" placeholder="Task Title"><br><br>
+                        <label for="full_name">Full Name:</label>
+                        <input type="text" name="full_name" value="<?=$user["full_name"] ?>" class="input-1" placeholder="Full Name"><br>
                     </div>
-                    <div class="input-holder">
-                        <textarea name="description" class="input-1" placeholder="Task Description"></textarea><br>
+                    <div class="form-1">
+                        <label for="password">Old Password: </label><br>
+                        <input type="text" name="password" value="*************"   class="input-1" placeholder="Old Password"><br>
                     </div>
-                    <div class="input-holder">
-                        <label for="due_date">Due Date: </label>
-                        <input type="date" name="due_date" class="input-1" placeholder="Due Date"><br>
+                    <div class="form-1">
+                        <label for="new_password">New Password: </label><br>
+                        <input type="text" name="new_password"  class="input-1" placeholder="New Password"><br>
                     </div>
-                    <div class="input-holder">
-                        <select name="assigned_to" class="input-1">
-                            <option value="0">Select Employee</option>
-                            <?php 
-                            if ($users != 0)
-                                foreach($users as $user) { ?>
-                                    <option value="<?=$user['id']?>"><?=$user['full_name']?></option>
-                            <?php } ?>
-                        </select><br><br>
+                    <div class="form-1">
+                        <label for="confirm_password">Confirm Password: </label><br>
+                        <input type="text" name="confirm_password"  class="input-1" placeholder="Confirm Password"><br><br>
                     </div>
-                    
-                    <button class="edit-btn">Create Task</button>
-                </form>
 
+                    <input type="text" name="id" value="<?=$user["id"]?>" hidden> 
+                    <button class="edit-btn">Change</button>
+                </form>
             </section>
+
         </div>
 
 
         <script type="text/javascript">
-            var active = document.querySelector("#navList li:nth-child(3)"); // Select the third list item in the navigation list
+            var active = document.querySelector("#navList li:nth-child(3)"); // Select the second list item in the navigation list
             active.classList.add("active"); // Add the "active" class to the selected list item
         </script>
     </body>

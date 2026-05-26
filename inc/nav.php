@@ -10,7 +10,7 @@
                 ?>
 
                     <!--- Employe Navigation Bar-->
-                    <ul>
+                    <ul id="navList">
                         <li>
                             <a href="#">
                                 <i class="fa-solid fa-computer" aria-hidden="true"></i>
@@ -18,19 +18,19 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="my_tasks.php">
                                 <i class="fa-solid fa-tasks"></i>
                                 <span>My Task</span>
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="profile.php">
                                 <i class="fa-solid fa-user"></i>
                                 <span>Profile</span>
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="notifications.php">
                                 <i class="fa-solid fa-bell"></i>
                                 <span>Notification</span>
                             </a>
