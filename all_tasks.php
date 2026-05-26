@@ -8,9 +8,30 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
     include "app/Model/task.php"; // Include the task model file to access task-related functions
     include "app/Model/user.php"; // Include the user model file to access user-related functions
 
-    $tasks = get_all_tasks($conn); // Retrieve all tasks from the database
-    $num_tasks = count($tasks); // Count the number of tasks retrieved
+    $text = "All Task";
+
+    if (isset($_GET['due_date']) && $_GET['due_date'] == "Due Today") { // Check if the 'due_date' parameter is set in the URL
+        $text = "Due Today";
+        $tasks = get_all_tasks_due_today($conn); // Retrieve all tasks from the database
+        // lets add if tasks zero then num task assign zero else count tasks
+        $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
+    }else if (isset($_GET['due_date']) && $_GET['due_date'] == "Overdue") { // Check if the 'due_date' parameter is set in the URL
+        $text = "Overdue";
+        $tasks = get_all_tasks_overdue($conn); // Retrieve all tasks from the database
+        $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
+    }else if (isset($_GET['due_date']) && $_GET['due_date'] == "No Deadline") { // Check if the 'due_date' parameter is set in the URL
+        $text = "No Deadline";
+        $tasks = get_all_tasks_no_deadline($conn); // Retrieve all tasks from the database
+        $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
+    }
+    else { 
+        $tasks = get_all_tasks($conn); // Retrieve all tasks from the database
+        $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
+    }
+
     $users = get_all_users($conn); // Retrieve all users from the database "employee"
+
+    
 
 
 ?>
@@ -34,7 +55,16 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
             <?php include "inc/nav.php"; ?> <!-- Include the navigation -->
             <section class="section-1">
-                <h4 class="title">All Tasks (<?php echo $num_tasks; ?>) <a href="create_task.php">Create Task</a></h4>
+                <h4 class="title-2">
+                    <a href="create_task.php" class="btn">Create Task</a>
+                    <a href="all_tasks.php?due_date=Due Today">Due Today</a>
+                    <a href="all_tasks.php?due_date=Overdue">Overdue</a>
+                    <a href="all_tasks.php?due_date=No Deadline">No Deadline</a>
+                    <a href="all_tasks.php">All Tasks</a>
+
+                </h4>
+
+                <h4 class="title-2"><?= $text ?> (<?php echo $num_tasks; ?>) </h4>
 
                  <?php
                     if (isset($_GET['success'])) { ?>
@@ -73,7 +103,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                                 ?>
                             </td>
                             
-                            <td><?=$task['due_date']  ?></td>
+                            <td><?= (is_null($task['due_date']) || $task['due_date'] === '0000-00-00') ? 'No Due Date' : $task['due_date'] ?></td>
                             <td><?=$task['STATUS']  ?></td>
                             <td>
                                 <a href="edit-task.php?id=<?=$task['id']?>" class="edit-btn">Edit</a> <!-- Link to edit task with id task -->

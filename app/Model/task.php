@@ -71,10 +71,54 @@ function get_all_tasks_by_id($conn, $id){
 
 }
 
-
+// aktualizacja statusu zadania w bazie danych
 function update_task_status($conn, $data) {
     $sql = "UPDATE tasks SET status = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->execute($data);
+}
+
+// pobranie wszystkich zadań z bazy danych, które są przypisane do użytkownika i mają termin dzisiaj
+function get_all_tasks_due_today($conn){
+    $sql = "SELECT * FROM tasks WHERE due_date = CURDATE()";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([]);
+
+    if ($stmt->rowCount() > 0){
+        $tasks = $stmt->fetchAll();
+
+    }else{
+        $tasks = 0;
+    }
+    return $tasks;
+}
+
+// pobranie wszystkich zadań z bazy danych, które są przypisane do użytkownika i nie mają terminu
+function get_all_tasks_overdue($conn){
+    $sql = "SELECT * FROM tasks WHERE due_date < CURDATE() AND NOT (due_date IS NULL OR due_date = '0000-00-00')";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([]);
+
+    if ($stmt->rowCount() > 0){
+        $tasks = $stmt->fetchAll();
+
+    }else{
+        $tasks = 0;
+    }
+    return $tasks;
+}
+
+function get_all_tasks_no_deadline($conn){
+    $sql = "SELECT * FROM tasks WHERE due_date IS NULL OR due_date = '0000-00-00'";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([]);
+
+    if ($stmt->rowCount() > 0){
+        $tasks = $stmt->fetchAll();
+
+    }else{
+        $tasks = 0;
+    }
+    return $tasks;
 }
 

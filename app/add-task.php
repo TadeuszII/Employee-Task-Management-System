@@ -27,10 +27,6 @@ if (isset($_POST['title']) && isset($_POST['description']) && isset($_POST['assi
         $error_message = "Description is required";
         header('Location: ../create_task.php?error=' . $error_message);
         exit();
-    }else if (empty($due_date)) { // Check if the due_date field is empty
-        $error_message = "Due Date is required";
-        header('Location: ../create_task.php?error=' . $error_message);
-        exit();
     }else if ($assigned_to == 0) { // Check if the assigned_to field is empty
         $error_message = "Assigned To is required";
         header('Location: ../create_task.php?error=' . $error_message);

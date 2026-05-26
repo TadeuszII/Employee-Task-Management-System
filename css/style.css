@@ -162,7 +162,7 @@
     display: inline-block;
     padding-left: 10px;
 	border: none;
-	background: #00ff44;
+	background: #01c335;
 	padding: 10px 15px;
 	color: #fff;
 	font-size: 15px;
@@ -179,9 +179,44 @@
 
 .section-1 .title a:hover{
     opacity: 0.8;
+    background: #00ff44;
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 
 }
+
+/* Buttons title 2 color  */
+
+.section-1 .title-2 {
+    margin-bottom: 10px;
+}
+
+.section-1 .title-2 .btn{
+    text-decoration: none;
+    display: inline-block;
+    padding-left: 10px;
+	border: none;
+	background: #01c335;
+	padding: 10px 15px;
+	color: #fff;
+	font-size: 15px;
+	border-radius: 5px;
+	cursor: pointer;
+	outline: none;
+	transition: background 1s;
+}
+
+.section-1 .title-2 .btn:hover{
+    opacity: 0.8;
+    background: #00ff44;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+
+}
+
+.section-1 .title-2 a{
+    display: inline-block;
+    margin-left: 10px;
+}
+
 
 .main-table, .main-table tr, .main-table th, .main-table td { /*to make the table borders visible */
     border: 1px solid #aaa;
@@ -279,3 +314,6 @@
     padding: 10px;
     margin-bottom: 10px;
 }
+
+
+
