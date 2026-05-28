@@ -27,24 +27,16 @@
         <!-- Error Message -->
         <?php if (isset($_GET['error'])) { ?>
             <div class="alert alert-warning" role="alert">
-                <?php echo stripcslashes($_GET['error']); ?>
+                <?php echo htmlspecialchars(stripcslashes($_GET['error']), ENT_QUOTES, 'UTF-8'); ?>
             </div>
         <?php } ?>
+
         <!-- Success Message -->
-        <?php
-        if (isset($_GET['success'])) { ?>
+        <?php if (isset($_GET['success'])) { ?>
             <div class="alert alert-success" role="alert">
-                <?php echo stripcslashes($_GET['success']); ?>
+                <?php echo htmlspecialchars(stripcslashes($_GET['success']), ENT_QUOTES, 'UTF-8'); ?>
             </div>
-
-
-
-
-        <?php }
-            // $pass = "erni123";
-            // $pass = password_hash($pass, PASSWORD_DEFAULT);
-            // echo $pass
-        ?>
+        <?php } ?>
 
 
         <div class="mb-3">

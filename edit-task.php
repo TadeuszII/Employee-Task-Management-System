@@ -34,6 +34,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
         <title>Edit Task</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/ai-panel.css">
 
 
     </head>
@@ -54,22 +55,22 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                     <!-- Error Message -->
                     <?php if (isset($_GET['error'])) { ?>
                         <div class="warning" role="alert">
-                            <?php echo stripcslashes($_GET['error']); ?>
+                            <?php echo htmlspecialchars(stripcslashes($_GET['error']), ENT_QUOTES, 'UTF-8'); ?>
                         </div>
                     <?php } ?>
                     <!-- Success Message -->
                     <?php
                     if (isset($_GET['success'])) { ?>
                         <div class="success" role="alert">
-                            <?php echo stripcslashes($_GET['success']); ?>
+                            <?php echo htmlspecialchars(stripcslashes($_GET['success']), ENT_QUOTES, 'UTF-8'); ?>
                         </div>
                     <?php }?>
         
                     <div class="input-holder">
-                        <input type="text" name="title" class="input-1" value="<?=$task["title"] ?>" placeholder="Task Title"><br><br>
+                        <input type="text" id="taskTitle" name="title" class="input-1" value="<?=$task["title"] ?>" placeholder="Task Title"><br><br>
                     </div>
                     <div class="input-holder">
-                        <textarea name="description" class="input-1" placeholder="Task Description"><?=$task["description"] ?></textarea><br><br>
+                        <textarea id="taskDescription" name="description" class="input-1" placeholder="Task Description"><?=$task["description"] ?></textarea><br><br>
                     </div>
                     <div class="input-holder">
                         <label for="due_date">Due Date: </label>
@@ -88,6 +89,9 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                     <input type="hidden" name="id" value="<?=$task['id']?>">
                     <button class="edit-btn">Update Task</button>
                 </form>
+
+                    <!-- AI Assistant Panel -->
+                    <?php include "inc/ai-panel.php"; ?>
             </section>
 
         </div>
@@ -97,6 +101,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
             var active = document.querySelector("#navList li:nth-child(4)"); // Select the second list item in the navigation list
             active.classList.add("active"); // Add the "active" class to the selected list item
         </script>
+        <script src="js/ai-panel.js"></script>
     </body>
 
     </html>

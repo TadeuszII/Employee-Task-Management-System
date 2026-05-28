@@ -76,7 +76,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
                  <?php
                     if (isset($_GET['success'])) { ?>
                         <div class="success" role="alert">
-                            <?php echo stripcslashes($_GET['success']); ?>
+                            <?php echo htmlspecialchars(stripcslashes($_GET['success']), ENT_QUOTES, 'UTF-8'); ?>
                         </div>
                     <?php }?>
 

@@ -42,6 +42,10 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
         // Get tasks by status
         $completed = get_tasks_by_status($conn, 'completed');
         $num_completed = $completed ? count($completed) : 0;
+
+        // Get unread notifications for admin
+        $notifications = get_my_unread_notifications($conn, $_SESSION['id']);
+        $num_unread_notifications = $notifications ? count($notifications) : 0;
     }else{
         // All tasks employee
         $my_tasks = get_all_tasks_by_id($conn, $_SESSION['id']);

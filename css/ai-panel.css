@@ -1,0 +1,138 @@
+/* ---- AI Assistant Panel ---- */
+.ai-panel {
+    width: 100%;
+    max-width: 500px;
+    margin-top: 30px;
+    background: #1a0010;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #cc0044;
+}
+
+.ai-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #2a0a2e;
+    cursor: pointer;
+    user-select: none;
+}
+
+.ai-panel-header h5 {
+    color: #ff4488;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+}
+
+.ai-panel-header .toggle-icon {
+    color: #ff4488;
+    transition: transform 0.3s;
+}
+
+.ai-panel-header.open .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.ai-panel-body {
+    display: none;
+    padding: 16px;
+}
+
+.ai-panel-body.open {
+    display: block;
+}
+
+.ai-prompt-label {
+    color: #ffffff;
+    font-size: 13px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.ai-prompt-hint {
+    color: #aa6688;
+    font-size: 12px;
+}
+
+.ai-prompt-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 2px solid #cc0044;
+    background: #2a0a2e;
+    color: #fff;
+    resize: vertical;
+    min-height: 70px;
+    outline: none;
+}
+
+.ai-prompt-input:focus {
+    border-color: #ff4488;
+}
+
+.ai-prompt-input::placeholder {
+    color: #aa6688;
+}
+
+.ai-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.ai-btn {
+    border: none;
+    padding: 9px 14px;
+    font-size: 13px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #fff;
+    font-weight: bold;
+    transition: opacity 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ai-btn:hover   { opacity: 0.85; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.ai-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.ai-btn-rewrite { background: #7b00cc; }
+.ai-btn-grammar { background: #0066cc; }
+.ai-btn-both    { background: #cc5500; }
+.ai-btn-scratch { background: #cc0044; }
+
+.ai-status {
+    margin-top: 10px;
+    font-size: 13px;
+    min-height: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ai-status.thinking { color: #ffaad4; }
+.ai-status.success  { color: #0f8400; }
+.ai-status.error    { color: #ff4455; }
+
+.ai-spinner {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #ff4488;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: ai-spin 0.7s linear infinite;
+    display: none;
+}
+
+.ai-status.thinking .ai-spinner { display: inline-block; }
+
+@keyframes ai-spin {
+    to { transform: rotate(360deg); }
+}

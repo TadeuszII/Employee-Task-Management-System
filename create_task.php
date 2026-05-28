@@ -20,6 +20,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
         <title>Create Task</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/ai-panel.css">
 
 
     </head>
@@ -52,10 +53,10 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                     <?php }?>
 
                     <div class="input-holder">
-                        <input type="text" name="title" class="input-1" placeholder="Task Title"><br><br>
+                        <input type="text" id="taskTitle" name="title" class="input-1" placeholder="Task Title"><br><br>
                     </div>
                     <div class="input-holder">
-                        <textarea name="description" class="input-1" placeholder="Task Description"></textarea><br>
+                        <textarea id="taskDescription" name="description" class="input-1" placeholder="Task Description"></textarea><br>
                     </div>
                     <div class="input-holder">
                         <label for="due_date">Due Date: </label>
@@ -75,14 +76,18 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                     <button class="edit-btn">Create Task</button>
                 </form>
 
+
+                    <!-- AI Assistant Panel -->
+                    <?php include "inc/ai-panel.php"; ?>
             </section>
         </div>
-
+    
 
         <script type="text/javascript">
             var active = document.querySelector("#navList li:nth-child(3)"); // Select the third list item in the navigation list
             active.classList.add("active"); // Add the "active" class to the selected list item
         </script>
+        <script src="js/ai-panel.js"></script>
     </body>
 
     </html>
