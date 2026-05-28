@@ -2,7 +2,7 @@
 
 session_start(); // Start the session to access session variables
 
-if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == 'admin') { // Check if the user is logged in by verifying session variables
+if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['role'], ['admin', 'manager'])) { // Check if the user is logged in by verifying session variables
 
     include "DB_connection.php"; // Include the database connection file
     include "app/Model/task.php"; // Include the task model file to access task-related functions
@@ -37,11 +37,15 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
         $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
     }
     else { 
-        $tasks = get_all_tasks($conn); // Retrieve all tasks from the database
+        if ($_SESSION['role'] === 'admin') {
+            $tasks = get_all_tasks($conn);
+        } else {
+            $tasks = get_all_tasks_by_creator($conn, $_SESSION['id']);
+        }
         $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
     }
 
-    $users = get_all_users($conn); // Retrieve all users from the database "employee"
+    $users = get_all_assignable_users($conn); // Retrieve all users from the database "employee"
 
     
 

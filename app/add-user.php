@@ -18,6 +18,8 @@ if (isset($_POST['user_name']) && isset($_POST['password']) && isset($_POST['ful
     $user_name = validate_input($_POST['user_name']);
     $password = validate_input($_POST['password']);
     $full_name = validate_input($_POST['full_name']);
+    $allowed_roles = ['employee', 'manager', 'admin'];
+    $role = isset($_POST['role']) && in_array($_POST['role'], $allowed_roles) ? $_POST['role'] : 'employee';
 
     if (empty($user_name)) { // Check if the username field is empty
         $error_message = "Username is required";
@@ -38,8 +40,7 @@ if (isset($_POST['user_name']) && isset($_POST['password']) && isset($_POST['ful
         // For now I set that there is admin and employee, In future need to add more roles and admin can give different roles
 
         $password = password_hash($password, PASSWORD_DEFAULT); // Hash the password
-
-        $data = array($full_name, $user_name, $password, "employee"); # <----Change to role in future
+        $data = array($full_name, $user_name, $password, $role);
         insert_user($conn, $data);
 
 

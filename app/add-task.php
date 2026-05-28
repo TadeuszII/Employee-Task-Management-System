@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user is logged in by verifying session variables
-if (isset($_POST['title']) && isset($_POST['description']) && isset($_POST['assigned_to']) && $_SESSION['role'] == 'admin' && isset($_POST['due_date'])) { // Check if the username and password fields are set and if the user is logged in by verifying session variables
+if (isset($_POST['title']) && isset($_POST['description']) && isset($_POST['assigned_to']) && in_array($_SESSION['role'], ['admin', 'manager']) && isset($_POST['due_date'])) { // Check if the username and password fields are set and if the user is logged in by verifying session variables
 
 
     include "../DB_connection.php"; // Include the database connection file to establish a connection to the database
@@ -38,7 +38,7 @@ if (isset($_POST['title']) && isset($_POST['description']) && isset($_POST['assi
         include "Model/notification.php"; // Include the notification model file to access notification-related functions
 
 
-        $data = array($title, $description, $assigned_to, $due_date);
+        $data = array($title, $description, $assigned_to, $due_date, $_SESSION['id']);
         insert_task($conn, $data);
         $notification_data = array("'$title' has been assigned to you.", $assigned_to, 'New Task Assigned');
         insert_notifications($conn, $notification_data);

@@ -50,6 +50,11 @@ if (isset($_POST['user_name']) && isset($_POST['password'])) {
                         $_SESSION['id'] = $id;
                         $_SESSION['username'] = $usernameDB;
                         header('Location: ../index.php');
+                    }else if ($role === 'manager') {
+                        $_SESSION['role'] = $role;
+                        $_SESSION['id'] = $id;
+                        $_SESSION['username'] = $usernameDB;
+                        header('Location: ../index.php');
                     } else { // If the role is neither admin nor employee, redirect back to the login page with an error message
                         $error_message = "Unknown error occurred";
                         header('Location: ../login.php?error=' . $error_message);

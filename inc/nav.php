@@ -44,7 +44,35 @@
                     </ul>
            
 
-        <?php } else { // If the user is not an employee, assume they are an admin
+        <?php }elseif ($_SESSION['role'] == 'manager') { ?>
+
+        <!--- Manager Navigation Bar -->
+        <ul id="navList">
+            <li>
+                <a href="index.php"><i class="fa-solid fa-computer" aria-hidden="true"></i>
+                <span>Dashboard</span></a>
+            </li>
+            <li>
+                <a href="my_tasks.php"><i class="fa-solid fa-tasks"></i><span>My Tasks</span></a>
+            </li>
+            <li>
+                <a href="create_task.php"><i class="fa-solid fa-plus"></i><span>Create Task</span></a>
+            </li>
+            <li>
+                <a href="all_tasks.php"><i class="fa-solid fa-list"></i><span>All Tasks</span></a>
+            </li>
+            <li>
+                <a href="notifications.php"><i class="fa-solid fa-bell"></i><span>Notification</span></a>
+            </li>
+            <li>
+                <a href="profile.php"><i class="fa-solid fa-user"></i><span>Profile</span></a>
+            </li>
+            <li>
+                <a href="logout.php"><i class="fa-solid fa-sign-out" aria-hidden="true"></i><span>Logout</span></a>
+            </li>
+        </ul>
+            
+           <?php } else { // If the user is not an employee, assume they are an admin
         ?>
             <!--- Admin Navigation Bar-->
             <ul id="navList">

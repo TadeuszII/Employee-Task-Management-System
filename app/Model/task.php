@@ -2,10 +2,9 @@
 
 // Wstawienia zadania w baza danych
 function insert_task($conn, $data){
-    $sql = "INSERT INTO tasks (title, description, assigned_to, due_date) VALUES (?,?,?,?)";
+    $sql = "INSERT INTO tasks (title, description, assigned_to, due_date, created_by) VALUES (?,?,?,?,?)";
     $stmt = $conn->prepare($sql);
     $stmt->execute($data);
-
 }
 
 // Pobranie wszystkich zadań z bazy danych
@@ -17,6 +16,20 @@ function get_all_tasks($conn){
     if ($stmt->rowCount() > 0){
         $tasks = $stmt->fetchAll();
 
+    }else{
+        $tasks = 0;
+    }
+    return $tasks;
+}
+
+// Pobranie wszystkich zadań z bazy danych stworzonych przez konkretnego użytkownika
+function get_all_tasks_by_creator($conn, $creator_id){
+    $sql = "SELECT * FROM tasks WHERE created_by = ? ORDER BY id DESC";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([$creator_id]);
+
+    if ($stmt->rowCount() > 0){
+        $tasks = $stmt->fetchAll();
     }else{
         $tasks = 0;
     }

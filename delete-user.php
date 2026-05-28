@@ -20,7 +20,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
         header('Location: manage_users.php?error=' . $error_message);
         exit();
     }
-    $data = array($id, "employee");
+    $data = array($id);
     $success_message = "Deleted user successfully";
     delete_user($conn, $data); // Call the function to delete the user from the database
     header('Location: manage_users.php?success=' . $success_message);

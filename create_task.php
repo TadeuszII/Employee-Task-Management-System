@@ -2,12 +2,12 @@
 
 session_start(); // Start the session to access session variables
 
-if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == 'admin') { // Check if the user is logged in by verifying session variables
+if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['role'], ['admin', 'manager'])) { // Check if the user is logged in by verifying session variables
 
     include "DB_connection.php"; // Include the database connection file
     include "app/Model/user.php"; // Include the user model file to access user-related functions
 
-    $users = get_all_users($conn); // Retrieve all users from the database "employee"
+    $users = get_all_assignable_users($conn); // Retrieve all assignable users from the database "employee"
 
 
 ?>

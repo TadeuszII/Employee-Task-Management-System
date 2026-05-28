@@ -73,6 +73,13 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                     <div class="form-1">
                         <input type="text" name="password"  class="input-1" placeholder="Password"><br><br>
                     </div>
+                     <div class="input-holder">
+                        <select name="role" class="input-1">
+                            <option value="employee" <?= $user['role'] == 'employee' ? 'selected' : '' ?>>Employee</option>
+                            <option value="manager"  <?= $user['role'] == 'manager'  ? 'selected' : '' ?>>Manager</option>
+                            <option value="admin"    <?= $user['role'] == 'admin'    ? 'selected' : '' ?>>Admin</option>
+                        </select><br><br>
+                    </div>
                     <input type="text" name="id" value="<?=$user["id"]?>" hidden> 
                     <button class="edit-btn">Update</button>
                 </form>
