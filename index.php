@@ -7,6 +7,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
     include "DB_connection.php"; // Include the database connection file
     include "app/Model/task.php"; // Include the task model file to access task-related functions
     include "app/Model/user.php"; // Include the user model file to access user-related functions
+    include "app/Model/notification.php"; // Include the notification model file to access notification-related functions
     
 
     if ($_SESSION['role'] == 'admin'){
@@ -70,6 +71,9 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
         $my_completed = get_tasks_by_id_status($conn, $_SESSION['id'], 'completed');
         $num_my_completed = $my_completed ? count($my_completed) : 0;
 
+        $notifications = get_my_unread_notifications($conn, $_SESSION['id']);
+        $num_unread_notifications = $notifications ? count($notifications) : 0;
+
 
     }
 
@@ -130,7 +134,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
                     </div>
                     <div class="dashboard-item">
                         <i class="fa fa-bell"></i>
-                        <span>5 Notification</span>
+                        <span><?= $num_unread_notifications ?> Unread Notifications</span>
                     </div>
                     <div class="dashboard-item">
                         <button class="view-btn" onclick="window.location.href='all_tasks.php?STATUS=pending'" style="background-color: transparent; border: none; padding: 0; cursor: pointer;">
@@ -180,7 +184,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
                     </div>
                     <div class="dashboard-item">
                         <i class="fa fa-bell"></i>
-                        <span>5 Notification</span>
+                        <span><?= $num_unread_notifications ?> Unread Notifications</span>
                     </div>
                     <div class="dashboard-item">
                         <button class="view-btn" onclick="window.location.href='my_tasks.php?STATUS=pending'" style="background-color: transparent; border: none; padding: 0; cursor: pointer;">

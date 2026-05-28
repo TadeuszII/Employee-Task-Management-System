@@ -88,6 +88,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
                             <th>Message</th>
                             <th>Type</th>
                             <th>Date</th>
+                            <th>Status</th>
 
                             <!-- Idea to changed it to who assigned -->
                             <!-- <th>Assigned To</th> -->
@@ -101,6 +102,8 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
                             <td><?=$notification['message'] ?></td>
                             <td><?=$notification['type'] ?></td>
                             <td><?=$notification['date'] ?></td>
+                            <!-- if is read == 1 should be read else not read -->
+                            <td><?= $notification['is_read'] == 1 ? 'Read' : 'Unread' ?></td>
 
                         </tr>
                         <?php } ?>

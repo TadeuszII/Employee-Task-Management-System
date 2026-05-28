@@ -8,7 +8,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
     include "Model/task.php"; // Include the task model file to access task-related functions
     include "Model/user.php";
     include "Model/notification.php";
-    $notifications = get_all_my_notifications($conn, $_SESSION['id']); // Retrieve all notifications from the database for the current user
+    $notifications = get_my_unread_notifications($conn, $_SESSION['id']); // Retrieve all notifications from the database for the current user
 
     if ($notifications == 0){ ?>
 
