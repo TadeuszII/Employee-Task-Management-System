@@ -23,6 +23,18 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
         $text = "No Deadline";
         $tasks = get_all_tasks_no_deadline($conn); // Retrieve all tasks from the database
         $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
+    }else if (isset($_GET['STATUS']) && $_GET['STATUS'] == "pending") { // Check if the 'due_date' parameter is set in the URL
+        $text = "Pending";
+        $tasks = get_tasks_by_status($conn, 'pending'); // Retrieve all tasks from the database
+        $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
+    }else if (isset($_GET['STATUS']) && $_GET['STATUS'] == "in_progress") { // Check if the 'due_date' parameter is set in the URL
+        $text = "In Progress";
+        $tasks = get_tasks_by_status($conn, 'in_progress'); // Retrieve all tasks from the database
+        $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
+    }else if (isset($_GET['STATUS']) && $_GET['STATUS'] == "completed") { // Check if the 'due_date' parameter is set in the URL
+        $text = "Completed";
+        $tasks = get_tasks_by_status($conn, 'completed'); // Retrieve all tasks from the database
+        $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
     }
     else { 
         $tasks = get_all_tasks($conn); // Retrieve all tasks from the database
@@ -61,6 +73,9 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                     <a href="all_tasks.php?due_date=Overdue">Overdue</a>
                     <a href="all_tasks.php?due_date=No Deadline">No Deadline</a>
                     <a href="all_tasks.php">All Tasks</a>
+                    <a href="all_tasks.php?STATUS=pending">Pending</a>
+                    <a href="all_tasks.php?STATUS=in_progress">In Progress</a>
+                    <a href="all_tasks.php?STATUS=completed">Completed</a>
 
                 </h4>
 

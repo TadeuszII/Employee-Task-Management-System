@@ -35,9 +35,14 @@ if (isset($_POST['title']) && isset($_POST['description']) && isset($_POST['assi
     else { // If both fields are filled, proceed with database verification
 
         include "Model/task.php"; // Include the user model file to access user-related functions
+        include "Model/notification.php"; // Include the notification model file to access notification-related functions
+
 
         $data = array($title, $description, $assigned_to, $due_date);
         insert_task($conn, $data);
+        $notification_data = array("'$title' has been assigned to you.", $assigned_to, 'New Task Assigned');
+        insert_notifications($conn, $notification_data);
+
 
 
         $error_message = "Task created successfully"; # Using error message to show success message

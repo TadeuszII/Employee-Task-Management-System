@@ -7,8 +7,9 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
     include "DB_connection.php"; // Include the database connection file
     include "app/Model/task.php"; // Include the task model file to access task-related functions
     include "app/Model/user.php"; // Include the user model file to access user-related functions
+    include "app/Model/notification.php"; // Include the notification model file to access notification-related functions
 
-    $tasks = get_all_tasks_by_id($conn, $_SESSION['id']); // Retrieve all tasks from the database for the current user
+    $notifications = get_all_my_notifications($conn, $_SESSION['id']); // Retrieve all notifications from the database for the current user
 
     // I think maybe add that user can see who assigned to him task
     //$users = get_all_users($conn); // Retrieve all users from the database "employee"
@@ -55,7 +56,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>All tasks</title>
+        <title>Notifications</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         <link rel="stylesheet" href="css/style.css">
 
@@ -69,16 +70,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
 
             <?php include "inc/nav.php"; ?> <!-- Include the navigation -->
             <section class="section-1">
-                <h4 class="title-2">
-                    <a href="my_tasks.php?due_date=Due Today">Due Today</a>
-                    <a href="my_tasks.php?due_date=Overdue">Overdue</a>
-                    <a href="my_tasks.php?due_date=No Deadline">No Deadline</a>
-                    <a href="my_tasks.php">All Tasks</a>
-                    <a href="my_tasks.php?STATUS=pending">Pending</a>
-                    <a href="my_tasks.php?STATUS=in_progress">In Progress</a>
-                    <a href="my_tasks.php?STATUS=completed">Completed</a>
-
-                </h4>
+                <h4 class="title-2">All Notifications</h4>
                 <h4 class="title-2"><?= $text ?> (<?php echo $num_tasks; ?>) </h4>
 
                  <?php
@@ -88,48 +80,34 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
                         </div>
                     <?php }?>
 
-                <?php if ($tasks != 0) { ?>
+                <?php if ($notifications != 0) { ?>
 
                     <table class="main-table">
                         <tr>
                             <th>#</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Due Date</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th>Message</th>
+                            <th>Type</th>
+                            <th>Date</th>
+
                             <!-- Idea to changed it to who assigned -->
                             <!-- <th>Assigned To</th> -->
                             
                         </tr>
 
-                        <?php $i=0; foreach($tasks as $task) { ?>
+                        <?php $i=0; foreach($notifications as $notification) { ?>
 
                         <tr>
                             <td><?=++$i?></td>
-                            <td><?=$task['title'] ?></td>
-                            <td><?=$task['description'] ?></td>
-                             <td><?= (is_null($task['due_date']) || $task['due_date'] === '0000-00-00') ? 'No Due Date' : $task['due_date'] ?></td>
-                            <td><?=$task['STATUS'] ?></td>
-                            <!-- lets show to who assigned full_name of user -->
-                            <!-- <td>
-                                <?php
-                                    // foreach($users as $user){
-                                    //     if($user['id'] == $task['assigned_to']){
-                                    //         echo $user['full_name'];
-                                    //     }
-                                    // }
-                                ?>
-                            </td> -->
-                            <td>
-                                <a href="edit-task-employee.php?id=<?=$task['id']?>" class="edit-btn">Edit</a> <!-- Link to edit task with id task -->
-                            </td>
+                            <td><?=$notification['message'] ?></td>
+                            <td><?=$notification['type'] ?></td>
+                            <td><?=$notification['date'] ?></td>
+
                         </tr>
                         <?php } ?>
                     </table>
 
                 <?php } else { ?>
-                    <h3>Empty User List</h3>
+                    <h3>You don't have any notifications</h3>
                 <?php } ?>
 
             </section>
@@ -137,9 +115,12 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
 
 
         <script type="text/javascript">
-            var active = document.querySelector("#navList li:nth-child(2)"); // Select the second list item in the navigation list
+            var active = document.querySelector("#navList li:nth-child(4)"); // Select the second list item in the navigation list
             active.classList.add("active"); // Add the "active" class to the selected list item
         </script>
+
+
+
     </body>
 
     </html>

@@ -95,7 +95,7 @@ function get_all_tasks_due_today($conn){
 
 // pobranie wszystkich zadań z bazy danych, które są przypisane do użytkownika i nie mają terminu
 function get_all_tasks_overdue($conn){
-    $sql = "SELECT * FROM tasks WHERE due_date < CURDATE() AND NOT (due_date IS NULL OR due_date = '0000-00-00')";
+    $sql = "SELECT * FROM tasks WHERE due_date < CURDATE() AND NOT (due_date IS NULL OR due_date = '0000-00-00') AND STATUS != 'completed'";
     $stmt = $conn->prepare($sql);
     $stmt->execute([]);
 
@@ -108,6 +108,7 @@ function get_all_tasks_overdue($conn){
     return $tasks;
 }
 
+// pobranie zadan bez dealinu
 function get_all_tasks_no_deadline($conn){
     $sql = "SELECT * FROM tasks WHERE due_date IS NULL OR due_date = '0000-00-00'";
     $stmt = $conn->prepare($sql);
@@ -121,4 +122,84 @@ function get_all_tasks_no_deadline($conn){
     }
     return $tasks;
 }
+
+// pobranie zadan bez dealinu
+function get_tasks_by_status($conn, $status){
+    $sql = "SELECT * FROM tasks WHERE status = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([$status]);
+
+    if ($stmt->rowCount() > 0){
+        $tasks = $stmt->fetchAll();
+
+    }else{
+        $tasks = 0;
+    }
+    return $tasks;
+}
+
+// Personal dashboard - pobranie zadan przypisanych do uzytkownika
+
+// pobranie dziseijszych zadan przypisanych do uzytkownika
+function get_all_tasks_by_id_due_today( $conn, $id ){
+    $sql = "SELECT * FROM tasks WHERE assigned_to = ? AND due_date = CURDATE()";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([$id]);
+
+    if ($stmt->rowCount() > 0){
+        $tasks = $stmt->fetchAll();
+
+    }else{
+        $tasks = 0;
+    }
+    return $tasks;
+}
+
+// pobranie zadan przypisanych do uzytkownika, ktore są przeterminowane
+function get_all_tasks_by_id_overdue( $conn, $id ){
+    $sql = "SELECT * FROM tasks WHERE assigned_to = ? AND due_date < CURDATE() AND NOT (due_date IS NULL OR due_date = '0000-00-00') AND STATUS != 'completed'";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([$id]);
+
+    if ($stmt->rowCount() > 0){
+        $tasks = $stmt->fetchAll();
+
+    }else{
+        $tasks = 0;
+    }
+    return $tasks;
+}
+
+// pobranie zadan przypisanych do uzytkownika, ktore nie mają terminu
+function get_all_tasks_by_id_no_deadline( $conn, $id ){
+    $sql = "SELECT * FROM tasks WHERE assigned_to = ? AND (due_date IS NULL OR due_date = '0000-00-00')";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([$id]);
+
+    if ($stmt->rowCount() > 0){
+        $tasks = $stmt->fetchAll();
+
+    }else{
+        $tasks = 0;
+    }
+    return $tasks;
+}
+
+// pobranie zadan przypisanych do uzytkownika, ktore mają określony status
+function get_tasks_by_id_status($conn, $id, $status){
+    $sql = "SELECT * FROM tasks WHERE assigned_to = ? AND status = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([$id, $status]);
+
+    if ($stmt->rowCount() > 0){
+        $tasks = $stmt->fetchAll();
+
+    }else{
+        $tasks = 0;
+    }
+    return $tasks;    
+
+}
+
+
 

@@ -19,3 +19,13 @@ CREATE TABLE tasks (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (assigned_to) REFERENCES user(id) ON DELETE SET NULL
 )
+
+--- NOTIFICATIONS
+CREATE TABLE notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    message TEXT NOT NULL,
+    recipient INT NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    date DATE NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE
+);
