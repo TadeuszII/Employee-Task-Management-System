@@ -48,6 +48,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
                             <th>Full Name</th>
                             <th>User Name</th>
                             <th>Role</th>
+                            <th>Assigned To</th>
                             <th>Action</th>
                         </tr>
 
@@ -58,6 +59,13 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
                             <td><?=$user['full_name'] ?></td>
                             <td><?=$user['username'] ?></td>
                             <td><?=$user['role'] ?></td>
+                            <td>
+                                <?php if ($user['role'] === 'employee' && !empty($user['manager_name'])) { ?>
+                                    <?= htmlspecialchars($user['manager_name'], ENT_QUOTES, 'UTF-8') ?>
+                                <?php } else { ?>
+                                    <span>None</span>
+                                <?php } ?>
+                            </td>
                             <td>
                                 <a href="edit-user.php?id=<?=$user['id']?>" class="edit-btn">Edit</a> <!-- Link to edit user with id user -->
                                 <a href="delete-user.php?id=<?=$user['id']?>" class="delete-btn">Delete</a> <!-- Link to delete user with id user -->

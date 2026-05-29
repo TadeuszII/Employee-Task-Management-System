@@ -3,7 +3,7 @@ session_start();
 
 if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user is logged in by verifying session variables
 
-    if ( isset($_POST['new_password']) && isset($_POST['confirm_password']) && isset($_POST['password']) && isset($_POST['full_name']) && $_SESSION['role'] == 'employee') { // Check if the username and password fields are set and if the user is logged in by verifying session variables
+    if ( isset($_POST['new_password']) && isset($_POST['confirm_password']) && isset($_POST['password']) && isset($_POST['full_name']) && in_array($_SESSION['role'], ['employee', 'manager'])) { // Check if the username and password fields are set and if the user is logged in by verifying session variables
 
         include "../DB_connection.php"; // Include the database connection file to establish a connection to the database
 

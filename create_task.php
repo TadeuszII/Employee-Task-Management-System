@@ -1,18 +1,29 @@
 <?php
 
+
 session_start(); // Start the session to access session variables
 
+
 if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['role'], ['admin', 'manager'])) { // Check if the user is logged in by verifying session variables
+
 
     include "DB_connection.php"; // Include the database connection file
     include "app/Model/user.php"; // Include the user model file to access user-related functions
 
-    $users = get_all_assignable_users($conn); // Retrieve all assignable users from the database "employee"
+
+    // Role-based user list for task assignment
+    if ($_SESSION['role'] === 'admin') {
+        $users = get_all_assignable_users_admin($conn); // Admin sees all employees and managers
+    } else {
+        $users = get_assignable_users_for_manager($conn, $_SESSION['id']); // Manager sees only their own employees and other managers
+    }
+
 
 
 ?>
     <!DOCTYPE html>
     <html lang="en">
+
 
     <head>
         <meta charset="UTF-8">
@@ -23,20 +34,25 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
         <link rel="stylesheet" href="css/ai-panel.css">
 
 
+
     </head>
+
 
     <body>
         <input type="checkbox" id="checkbox">
         <?php include "inc/header.php"; ?> <!-- Include the header -->
         <div class="body">
 
+
             <?php include "inc/nav.php"; ?> <!-- Include the navigation -->
             <section class="section-1">
                 <h4 class="title">Create Task</h4>
 
+
                 <form class="form-1"
                     action="app/add-task.php"
                     method="POST">
+
 
                     <!-- Error Message -->
                     <?php if (isset($_GET['error'])) { ?>
@@ -51,6 +67,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
                             <?php echo stripcslashes($_GET['success']); ?>
                         </div>
                     <?php }?>
+
 
                     <div class="input-holder">
                         <input type="text" id="taskTitle" name="title" class="input-1" placeholder="Task Title"><br><br>
@@ -68,7 +85,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
                             <?php 
                             if ($users != 0)
                                 foreach($users as $user) { ?>
-                                    <option value="<?=$user['id']?>"><?=$user['full_name']?></option>
+                                    <option value="<?=$user['id']?>"><?=$user['full_name']?> (<?=$user['role']?>)</option>
                             <?php } ?>
                         </select><br><br>
                     </div>
@@ -77,11 +94,13 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
                 </form>
 
 
+
                     <!-- AI Assistant Panel -->
                     <?php include "inc/ai-panel.php"; ?>
             </section>
         </div>
     
+
 
         <script type="text/javascript">
             var active = document.querySelector("#navList li:nth-child(3)"); // Select the third list item in the navigation list
@@ -90,7 +109,9 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
         <script src="js/ai-panel.js"></script>
     </body>
 
+
     </html>
+
 
 <?php } else {
     $error_message = "Login at first";

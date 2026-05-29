@@ -1,58 +1,65 @@
 <?php
 
+
 session_start(); // Start the session to access session variables
 
+
 if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['role'], ['admin', 'manager'])) { // Check if the user is logged in by verifying session variables
+
 
     include "DB_connection.php"; // Include the database connection file
     include "app/Model/task.php"; // Include the task model file to access task-related functions
     include "app/Model/user.php"; // Include the user model file to access user-related functions
 
+
     $text = "All Task";
+    $role = $_SESSION['role'];
+    $id   = $_SESSION['id'];
+
 
     if (isset($_GET['due_date']) && $_GET['due_date'] == "Due Today") { // Check if the 'due_date' parameter is set in the URL
         $text = "Due Today";
-        $tasks = get_all_tasks_due_today($conn); // Retrieve all tasks from the database
+        $tasks = get_tasks_scoped($conn, $role, $id, 'due_today'); // Retrieve all tasks from the database
         // lets add if tasks zero then num task assign zero else count tasks
         $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
     }else if (isset($_GET['due_date']) && $_GET['due_date'] == "Overdue") { // Check if the 'due_date' parameter is set in the URL
         $text = "Overdue";
-        $tasks = get_all_tasks_overdue($conn); // Retrieve all tasks from the database
+        $tasks = get_tasks_scoped($conn, $role, $id, 'overdue'); // Retrieve all tasks from the database
         $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
     }else if (isset($_GET['due_date']) && $_GET['due_date'] == "No Deadline") { // Check if the 'due_date' parameter is set in the URL
         $text = "No Deadline";
-        $tasks = get_all_tasks_no_deadline($conn); // Retrieve all tasks from the database
+        $tasks = get_tasks_scoped($conn, $role, $id, 'no_deadline'); // Retrieve all tasks from the database
         $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
     }else if (isset($_GET['STATUS']) && $_GET['STATUS'] == "pending") { // Check if the 'due_date' parameter is set in the URL
         $text = "Pending";
-        $tasks = get_tasks_by_status($conn, 'pending'); // Retrieve all tasks from the database
+        $tasks = get_tasks_scoped($conn, $role, $id, 'status', 'pending'); // Retrieve all tasks from the database
         $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
     }else if (isset($_GET['STATUS']) && $_GET['STATUS'] == "in_progress") { // Check if the 'due_date' parameter is set in the URL
         $text = "In Progress";
-        $tasks = get_tasks_by_status($conn, 'in_progress'); // Retrieve all tasks from the database
+        $tasks = get_tasks_scoped($conn, $role, $id, 'status', 'in_progress'); // Retrieve all tasks from the database
         $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
     }else if (isset($_GET['STATUS']) && $_GET['STATUS'] == "completed") { // Check if the 'due_date' parameter is set in the URL
         $text = "Completed";
-        $tasks = get_tasks_by_status($conn, 'completed'); // Retrieve all tasks from the database
+        $tasks = get_tasks_scoped($conn, $role, $id, 'status', 'completed'); // Retrieve all tasks from the database
         $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
     }
     else { 
-        if ($_SESSION['role'] === 'admin') {
-            $tasks = get_all_tasks($conn);
-        } else {
-            $tasks = get_all_tasks_by_creator($conn, $_SESSION['id']);
-        }
+        $tasks = get_tasks_scoped($conn, $role, $id); // Retrieve all tasks scoped to role
         $num_tasks = $tasks ? count($tasks) : 0; // Count the number of tasks retrieved
     }
 
+
     $users = get_all_assignable_users($conn); // Retrieve all users from the database "employee"
 
+
     
+
 
 
 ?>
     <!DOCTYPE html>
     <html lang="en">
+
 
     <head>
         <meta charset="UTF-8">
@@ -62,12 +69,15 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
         <link rel="stylesheet" href="css/style.css">
 
 
+
     </head>
+
 
     <body>
         <input type="checkbox" id="checkbox">
         <?php include "inc/header.php"; ?> <!-- Include the header -->
         <div class="body">
+
 
             <?php include "inc/nav.php"; ?> <!-- Include the navigation -->
             <section class="section-1">
@@ -81,9 +91,12 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
                     <a href="all_tasks.php?STATUS=in_progress">In Progress</a>
                     <a href="all_tasks.php?STATUS=completed">Completed</a>
 
+
                 </h4>
 
+
                 <h4 class="title-2"><?= $text ?> (<?php echo $num_tasks; ?>) </h4>
+
 
                  <?php
                     if (isset($_GET['success'])) { ?>
@@ -92,7 +105,9 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
                         </div>
                     <?php }?>
 
+
                 <?php if ($tasks != 0) { ?>
+
 
                     <table class="main-table">
                         <tr>
@@ -105,7 +120,9 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
                             <th>Action</th>
                         </tr>
 
+
                         <?php $i=0; foreach($tasks as $task) { ?>
+
 
                         <tr>
                             <td><?=++$i?></td>
@@ -132,12 +149,15 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
                         <?php } ?>
                     </table>
 
+
                 <?php } else { ?>
                     <h3>Empty User List</h3>
                 <?php } ?>
 
+
             </section>
         </div>
+
 
 
         <script type="text/javascript">
@@ -146,7 +166,9 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
         </script>
     </body>
 
+
     </html>
+
 
 <?php } else {
     $error_message = "Login at first";

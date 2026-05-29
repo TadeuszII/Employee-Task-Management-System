@@ -135,11 +135,6 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
             </section>
         </div>
 
-
-        <script type="text/javascript">
-            var active = document.querySelector("#navList li:nth-child(2)"); // Select the second list item in the navigation list
-            active.classList.add("active"); // Add the "active" class to the selected list item
-        </script>
     </body>
 
     </html>

@@ -2,7 +2,7 @@
 
 session_start(); // Start the session to access session variables
 
-if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == 'employee') { // Check if the user is logged in by verifying session variables
+if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['role'], ['admin', 'employee', 'manager'])) { // Check if the user is logged in by verifying session variables
 
     include "DB_connection.php"; // Include the database connection file
     include "app/Model/user.php"; // Include the user model file to access user-related functions
@@ -51,10 +51,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
         </div>
 
 
-        <script type="text/javascript">
-            var active = document.querySelector("#navList li:nth-child(3)"); // Select the second list item in the navigation list
-            active.classList.add("active"); // Add the "active" class to the selected list item
-        </script>
+
     </body>
 
     </html>

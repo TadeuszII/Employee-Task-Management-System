@@ -214,5 +214,46 @@ function get_tasks_by_id_status($conn, $id, $status){
 
 }
 
+// Pobranie zadań z bazy danych z zakresem widoczności w zależności od roli użytkownika i dodatkowym filtrem
+function get_tasks_scoped($conn, $role, $id, $filter = null, $extra = null){
+
+    // Build the WHERE scope based on role
+    if ($role === 'admin') {
+        $scope = "1=1";
+        $params = [];
+    } elseif ($role === 'manager') {
+        $scope = "(assigned_to = ? OR assigned_to IN (SELECT id FROM user WHERE manager_id = ?))";
+        $params = [$id, $id];
+    } else {
+        $scope = "assigned_to = ?";
+        $params = [$id];
+    }
+
+    // Build the WHERE filter
+    switch ($filter) {
+        case 'due_today':
+            $condition = "due_date = CURDATE()";
+            break;
+        case 'overdue':
+            $condition = "due_date < CURDATE() AND NOT (due_date IS NULL OR due_date = '0000-00-00') AND STATUS != 'completed'";
+            break;
+        case 'no_deadline':
+            $condition = "(due_date IS NULL OR due_date = '0000-00-00')";
+            break;
+        case 'status':
+            $condition = "status = ?";
+            $params[] = $extra;
+            break;
+        default:
+            $condition = "1=1";
+    }
+
+    $sql = "SELECT * FROM tasks WHERE $scope AND $condition ORDER BY id DESC";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute($params);
+
+    return $stmt->rowCount() > 0 ? $stmt->fetchAll() : 0;
+}
+
 
 

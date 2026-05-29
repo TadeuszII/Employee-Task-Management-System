@@ -1,15 +1,19 @@
 <?php
 
 
+
 session_start(); // Start the session to access session variables
+
 
 
 if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['role'], ['admin', 'manager'])) { // Check if the user is logged in by verifying session variables
 
 
+
     include "DB_connection.php"; // Include the database connection file
     include "app/Model/task.php"; // Include the user model file to access user-related functions
     include "app/Model/user.php"; // Include the user model file to access user-related functions
+
 
 
     if (!isset($_GET['id'])) {
@@ -19,13 +23,16 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
     }
     $id = (int)$_GET['id'];
 
+
     $task = get_task_by_id($conn, $id); // Retrieve the task from the database "employee"
+
 
     if ($task == 0) {
         $error_message = "Task not found";
         header('Location: all_tasks.php?error=' . $error_message);
         exit();
     }
+
 
     // manager can only edit task they created
     if ($_SESSION['role'] === 'manager' && $task['created_by'] != $_SESSION['id']) {
@@ -34,14 +41,20 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
     }
     
 
-    // Retrieve all users assignable to the task (employees and managers)
-    $users = get_all_assignable_users($conn); // Retrieve all users from the database "employee"
+    // Role-based user list for task assignment
+    if ($_SESSION['role'] === 'admin') {
+        $users = get_all_assignable_users_admin($conn); // Admin sees all employees and managers
+    } else {
+        $users = get_assignable_users_for_manager($conn, $_SESSION['id']); // Manager sees only their own employees and other managers
+    }
     
+
 
 
 ?>  
     <!DOCTYPE html>
     <html lang="en">
+
 
 
     <head>
@@ -54,7 +67,9 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
 
 
 
+
     </head>
+
 
 
     <body>
@@ -63,14 +78,17 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
         <div class="body">
 
 
+
             <?php include "inc/nav.php"; ?> <!-- Include the navigation -->
             <section class="section-1">
                 <h4 class="title">Edit Task <a href="all_tasks.php">Tasks</a></h4>
 
 
+
                 <form class="form-1"
                     action="app/update-task.php"
                     method="POST">
+
 
 
                     <!-- Error Message -->
@@ -112,12 +130,15 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
                 </form>
 
 
+
                     <!-- AI Assistant Panel -->
                     <?php include "inc/ai-panel.php"; ?>
             </section>
 
 
+
         </div>
+
 
 
 
@@ -129,7 +150,9 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
     </body>
 
 
+
     </html>
+
 
 
 <?php } else {

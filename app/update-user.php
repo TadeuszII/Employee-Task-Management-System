@@ -26,6 +26,10 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
         $id        = (int)$_POST['id'];
         $allowed_roles = ['employee', 'manager', 'admin'];
         $role = isset($_POST['role']) && in_array($_POST['role'], $allowed_roles) ? $_POST['role'] : 'employee';
+        $manager_id = null;
+        if ($role === 'employee' && !empty($_POST['manager_id']) && is_numeric($_POST['manager_id'])) {
+            $manager_id = (int)$_POST['manager_id'];
+        }
 
 
         if (empty($user_name)) { // Check if the username field is empty
@@ -51,8 +55,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
             
 
             //use selected role instead of hardcoded 'employee' 
-            $data = array($full_name, $user_name, $password, $role, $id); # role is now dynamic
-            
+            $data = array($full_name, $user_name, $password, $role, $manager_id, $id);
             update_user($conn, $data);
 
 

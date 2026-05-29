@@ -21,7 +21,11 @@ function get_all_users($conn){
 
 // ---- get ALL users for manage_users.php ----
 function get_all_users_admin($conn){
-    $sql = "SELECT * FROM user ORDER BY role, full_name";
+    // LEFT JOIN to fetch the manager's full name alongside each user
+    $sql = "SELECT u.*, m.full_name AS manager_name 
+            FROM user u
+            LEFT JOIN user m ON u.manager_id = m.id
+            ORDER BY u.role, u.full_name";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
 
@@ -51,23 +55,65 @@ function get_all_assignable_users($conn){
 }
 
 
+// ---- Admin task assignment: all employees + all managers (NO admins) ----
+function get_all_assignable_users_admin($conn){
+    $sql = "SELECT * FROM user WHERE role IN ('employee', 'manager') ORDER BY role, full_name";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0){
+        $users = $stmt->fetchAll();
+    }else{
+        $users = 0;
+    }
+    return $users;
+}
+
+// ---- Manager task assignment: only their own employees + all other managers (not self) ----
+function get_assignable_users_for_manager($conn, $manager_id){
+    $sql = "SELECT * FROM user 
+            WHERE (role = 'employee' AND manager_id = ?)
+               OR (role = 'manager' AND id != ?)
+            ORDER BY role, full_name";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([$manager_id, $manager_id]);
+
+    if ($stmt->rowCount() > 0){
+        $users = $stmt->fetchAll();
+    }else{
+        $users = 0;
+    }
+    return $users;
+}
+
+// ---- For add-user/edit-user: populate the manager_id dropdown (managers + admins) ----
+function get_all_managers_and_admins($conn){
+    $sql = "SELECT * FROM user WHERE role IN ('manager', 'admin') ORDER BY role, full_name";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0){
+        $users = $stmt->fetchAll();
+    }else{
+        $users = 0;
+    }
+    return $users;
+}
+
 # ---- To insert user to the database ----
 function insert_user($conn, $data){
-    $sql = "INSERT INTO user (full_name, username, password, role) VALUES (?,?,?,?)";
+    $sql = "INSERT INTO user (full_name, username, password, role, manager_id) VALUES (?,?,?,?,?)";
     $stmt = $conn->prepare($sql);
     $stmt->execute($data);
-
-
 }
 
 
 # ---- To update user data in the database ----
 function update_user($conn, $data){
-    $sql = "UPDATE user SET full_name = ?, username = ?, password = ?, role = ? WHERE id = ?";
+    $sql = "UPDATE user SET full_name = ?, username = ?, password = ?, role = ?, manager_id = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->execute($data);
-
-
+    $stmt->execute($data); // data = [full_name, username, password, role, manager_id, id]
+    
 }
 
 
