@@ -1,83 +1,96 @@
 <?php
 session_start();
 
-if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user is logged in by verifying session variables
+if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
 
-    if ( isset($_POST['new_password']) && isset($_POST['confirm_password']) && isset($_POST['password']) && isset($_POST['full_name']) && in_array($_SESSION['role'], ['employee', 'manager'])) { // Check if the username and password fields are set and if the user is logged in by verifying session variables
+    if (isset($_POST['new_password']) && isset($_POST['confirm_password']) && isset($_POST['password']) && isset($_POST['full_name']) && in_array($_SESSION['role'], ['admin', 'employee', 'manager'])) {
 
-        include "../DB_connection.php"; // Include the database connection file to establish a connection to the database
+        include "../DB_connection.php";
 
-        function validate_input($data) // Function to sanitize user input
-        {
+        function validate_input($data) {
             $data = trim($data);
             $data = stripslashes($data);
             $data = htmlspecialchars($data);
             return $data;
         }
 
-        
-        $password  = validate_input($_POST['password']);
-        $full_name = validate_input($_POST['full_name']);
-        $new_password = validate_input($_POST['new_password']);
-        $confirm_password        = validate_input($_POST['confirm_password']);
-        $id = $_SESSION['id'];
+        $password         = validate_input($_POST['password']);
+        $full_name        = validate_input($_POST['full_name']);
+        $new_password     = validate_input($_POST['new_password']);
+        $confirm_password = validate_input($_POST['confirm_password']);
+        $id               = $_SESSION['id'];
 
-        if (empty($password) || empty($new_password) || empty($confirm_password)) { // Check if any of the password fields are empty
-            $error_message = "All password fields are required";
-            header('Location: ../edit_profile.php?error=' . $error_message);
+        if (empty($full_name)) {
+            header('Location: ../edit_profile.php?error=Full name is required');
             exit();
-        } else if ($new_password !== $confirm_password) { // Check if the new password and confirm password match
-            $error_message = "New password and confirm password do not match";
-            header('Location: ../edit_profile.php?error=' . $error_message);
+        }
+        if (empty($password) || empty($new_password) || empty($confirm_password)) {
+            header('Location: ../edit_profile.php?error=All password fields are required');
             exit();
-        } else if (empty($full_name)) { // Check if the full name field is empty
-            $error_message = "Full name is required";
-            header('Location: ../edit_profile.php?error=' . $error_message);
+        }
+        if ($new_password !== $confirm_password) {
+            header('Location: ../edit_profile.php?error=New password and confirm password do not match');
             exit();
-        } else { // If both fields are filled, proceed with database update
+        }
 
-            include "Model/user.php"; // Include the user model file to access user-related functions
-            $user = get_user_by_id($conn, $id);
+        include "Model/user.php";
+        $user = get_user_by_id($conn, $id);
 
-            if ($user ){
-            
-                if (password_verify($password, $user['password'])) {
-                                            
-                
+        if (!$user) {
+            header('Location: ../edit_profile.php?error=Unknown error occurred');
+            exit();
+        }
 
-                    // For now I set that there is admin and employee, In future need to add more roles and admin can give different roles
+        if (!password_verify($password, $user['password'])) {
+            header('Location: ../edit_profile.php?error=Incorrect password');
+            exit();
+        }
 
-                    $new_password = password_hash($new_password, PASSWORD_DEFAULT); // Hash the password
+        $profile_picture_name = null;
 
-                    $data = array($full_name, $new_password, $id); # <----Change to role in future
-                    update_profile($conn, $data);
+        if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === 0) {
+            $allowed = ['jpg', 'jpeg', 'png', 'webp'];
+            $ext = strtolower(pathinfo($_FILES['profile_picture']['name'], PATHINFO_EXTENSION));
+            $size = $_FILES['profile_picture']['size'];
 
-                    $success_message = "User updated successfully";
-                    header('Location: ../edit_profile.php?success=' . $success_message);
-                    exit();
-                }else{
-                    $error_message = "Incorrect password";
-                    header('Location: ../edit_profile.php?error=' . $error_message);
-                    exit();
-                }
-            }else{
-                $error_message = "Unknown error occurred";
-                header('Location: ../edit_profile.php?error=' . $error_message);
+            if (!in_array($ext, $allowed)) {
+                header('Location: ../edit_profile.php?error=Invalid file type. Allowed: jpg, png, webp');
+                exit();
+            }
+            if ($size > 2 * 1024 * 1024) {
+                header('Location: ../edit_profile.php?error=File too large. Maximum size is 2MB');
                 exit();
             }
 
-            
+            $profile_picture_name = 'user_' . $id . '.' . $ext;
+            $destination = '../images/profiles/' . $profile_picture_name;
+
+            if (!move_uploaded_file($_FILES['profile_picture']['tmp_name'], $destination)) {
+                header('Location: ../edit_profile.php?error=Failed to upload image');
+                exit();
+            }
         }
 
-    } else { // If the username or password fields are not set, redirect back with an error message
-        $error_message = "Unknown error occurred";
-        header('Location: ../edit_profile.php?error=' . $error_message);
+        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+
+        if ($profile_picture_name) {
+            $stmt = $conn->prepare("UPDATE user SET full_name=?, password=?, profile_picture=? WHERE id=?");
+            $stmt->execute([$full_name, $hashed_password, $profile_picture_name, $id]);
+        } else {
+            $stmt = $conn->prepare("UPDATE user SET full_name=?, password=? WHERE id=?");
+            $stmt->execute([$full_name, $hashed_password, $id]);
+        }
+
+        header('Location: ../edit_profile.php?success=Profile updated successfully');
+        exit();
+
+    } else {
+        header('Location: ../edit_profile.php?error=Unknown error occurred');
         exit();
     }
 
 } else {
-    $error_message = "Login at first";
-    header('Location: ../login.php?error=' . $error_message);
+    header('Location: ../login.php?error=Login at first');
     exit();
 }
 ?>

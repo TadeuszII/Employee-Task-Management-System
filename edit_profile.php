@@ -1,87 +1,96 @@
 <?php
 
-session_start(); // Start the session to access session variables
+session_start();
 
-if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['role'], ['admin', 'employee', 'manager'])) { // Check if the user is logged in by verifying session variables
+if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['role'], ['admin', 'employee', 'manager'])) {
 
-    include "DB_connection.php"; // Include the database connection file
-    include "app/Model/user.php"; // Include the user model file to access user-related functions
+    include "DB_connection.php";
+    include "app/Model/user.php";
 
-    $user = get_user_by_id($conn, $_SESSION['id']); // Retrieve the task from the database "employee"
-    
-?>  
-    <!DOCTYPE html>
-    <html lang="en">
+    $user = get_user_by_id($conn, $_SESSION['id']);
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Profile</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-        <link rel="stylesheet" href="css/style.css">
+    $pic = (!empty($user['profile_picture']))
+        ? 'images/profiles/' . $user['profile_picture']
+        : 'images/User_PlaceHolder.png';
+?>
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
 
-    </head>
+<body>
+    <input type="checkbox" id="checkbox">
+    <?php include "inc/header.php"; ?>
+    <div class="body">
 
-    <body>
-        <input type="checkbox" id="checkbox">
-        <?php include "inc/header.php"; ?> <!-- Include the header -->
-        <div class="body">
+        <?php include "inc/nav.php"; ?>
+        <section class="section-1">
+            <h4 class="title">Edit Profile <a href="profile.php">Profile</a></h4>
 
-            <?php include "inc/nav.php"; ?> <!-- Include the navigation -->
-            <section class="section-1">
-                <h4 class="title">Edit Profile <a href="profile.php">Profile</a></h4>
-                
-                <form class="form-1"
-                    action="app/update-profile.php"
-                    method="POST">
+            <form class="form-1" action="app/update-profile.php" method="POST" enctype="multipart/form-data">
 
-                    <!-- Error Message -->
-                    <?php if (isset($_GET['error'])) { ?>
-                        <div class="warning" role="alert">
-                            <?php echo stripcslashes($_GET['error']); ?>
-                        </div>
-                    <?php } ?>
-                    <!-- Success Message -->
-                    <?php
-                    if (isset($_GET['success'])) { ?>
-                        <div class="success" role="alert">
-                            <?php echo stripcslashes($_GET['success']); ?>
-                        </div>
-                    <?php }?>
-
-                    <div class="input-holder">
-                        <label for="full_name">Full Name:</label>
-                        <input type="text" name="full_name" value="<?=$user["full_name"] ?>" class="input-1" placeholder="Full Name"><br>
+                <!-- Error Message -->
+                <?php if (isset($_GET['error'])) { ?>
+                    <div class="warning" role="alert">
+                        <?php echo stripcslashes($_GET['error']); ?>
                     </div>
-                    <div class="form-1">
-                        <label for="password">Old Password: </label><br>
-                        <input type="text" name="password" value="*************"   class="input-1" placeholder="Old Password"><br>
+                <?php } ?>
+
+                <!-- Success Message -->
+                <?php if (isset($_GET['success'])) { ?>
+                    <div class="success" role="alert">
+                        <?php echo stripcslashes($_GET['success']); ?>
                     </div>
-                    <div class="form-1">
-                        <label for="new_password">New Password: </label><br>
-                        <input type="text" name="new_password"  class="input-1" placeholder="New Password"><br>
-                    </div>
-                    <div class="form-1">
-                        <label for="confirm_password">Confirm Password: </label><br>
-                        <input type="text" name="confirm_password"  class="input-1" placeholder="Confirm Password"><br><br>
-                    </div>
+                <?php } ?>
 
-                    <input type="text" name="id" value="<?=$user["id"]?>" hidden> 
-                    <button class="edit-btn">Change</button>
-                </form>
-            </section>
+                <!-- Profile Picture Preview -->
+                <div class="input-holder">
+                    <img src="<?= htmlspecialchars($pic) ?>" alt="Profile Picture"
+                        style="width:100px; height:100px; border-radius:50%; border:3px solid #cc0044; object-fit:cover; display:block; margin-bottom:10px;">
+                    <label for="profile_picture">Profile Picture:</label>
+                    <input type="file" name="profile_picture" id="profile_picture" accept="image/jpeg, image/png, image/webp" class="input-1">
+                </div>
 
-        </div>
+                <!-- Full Name -->
+                <div class="input-holder">
+                    <label for="full_name">Full Name:</label>
+                    <input type="text" name="full_name" id="full_name" value="<?= htmlspecialchars($user['full_name']) ?>" class="input-1" placeholder="Full Name">
+                </div>
 
+                <!-- Old Password -->
+                <div class="input-holder">
+                    <label for="password">Old Password:</label>
+                    <input type="password" name="password" id="password" class="input-1" placeholder="Old Password">
+                </div>
 
-        <script type="text/javascript">
-            var active = document.querySelector("#navList li:nth-child(3)"); // Select the second list item in the navigation list
-            active.classList.add("active"); // Add the "active" class to the selected list item
-        </script>
-    </body>
+                <!-- New Password -->
+                <div class="input-holder">
+                    <label for="new_password">New Password:</label>
+                    <input type="password" name="new_password" id="new_password" class="input-1" placeholder="New Password">
+                </div>
 
-    </html>
+                <!-- Confirm Password -->
+                <div class="input-holder">
+                    <label for="confirm_password">Confirm Password:</label>
+                    <input type="password" name="confirm_password" id="confirm_password" class="input-1" placeholder="Confirm Password">
+                </div>
+
+                <input type="hidden" name="id" value="<?= $user['id'] ?>">
+                <br>
+                <button class="edit-btn">Save Changes</button>
+            </form>
+        </section>
+
+    </div>
+</body>
+
+</html>
 
 <?php } else {
     $error_message = "Login at first";

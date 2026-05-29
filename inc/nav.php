@@ -1,6 +1,13 @@
+<?php
+$nav_user = get_user_by_id($conn, $_SESSION['id']);
+$pic = (!empty($nav_user['profile_picture']))
+    ? 'images/profiles/' . $nav_user['profile_picture']
+    : 'images/User_PlaceHolder.png';
+?>
+
 <nav class="side-bar">
     <div class="user-p">
-        <img src="images/User_PlaceHolder.png" alt="User Place holder">
+        <img src="<?= htmlspecialchars($pic) ?>" alt="Profile Picture">
         <h4><?php echo $_SESSION['username']; ?></h4>
     </div>
 
