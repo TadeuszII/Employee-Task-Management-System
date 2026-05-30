@@ -70,6 +70,11 @@ if (isset($_POST['user_name']) && isset($_POST['password'])) {
                 header('Location: ../login.php?error=' . $error_message);
                 exit();
             }
+        }else {
+            
+            $error_message = "Incorrect username or password";
+            header('Location: ../login.php?error=' . $error_message);
+            exit();
         }
     }
 } else { // If the username or password fields are not set, redirect back to the login page with an error message

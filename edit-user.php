@@ -1,14 +1,18 @@
 <?php
 
 
+
 session_start(); // Start the session to access session variables
+
 
 
 if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == 'admin') { // Check if the user is logged in by verifying session variables
 
 
+
     include "DB_connection.php"; // Include the database connection file
     include "app/Model/user.php"; // Include the user model file to access user-related functions
+
 
 
     if (!isset($_GET['id'])) {
@@ -26,13 +30,16 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
         exit();
     }
 
-    // Load managers and admins for the manager assignment dropdown
-    $supervisors = get_all_managers_and_admins($conn);
+
+    // Load managers and admins for the manager assignment dropdown — exclude the user being edited so they cannot be assigned to themselves
+    $supervisors = get_all_managers_and_admins($conn, $user['id']);
+
 
 
 ?>  
     <!DOCTYPE html>
     <html lang="en">
+
 
 
     <head>
@@ -44,7 +51,9 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
 
 
 
+
     </head>
+
 
 
     <body>
@@ -53,14 +62,17 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
         <div class="body">
 
 
+
             <?php include "inc/nav.php"; ?> <!-- Include the navigation -->
             <section class="section-1">
                 <h4 class="title">Edit User <a href="manage_users.php">Users</a></h4>
 
 
+
                 <form class="form-1"
                     action="app/update-user.php"
                     method="POST">
+
 
 
                     <!-- Error Message -->
@@ -78,9 +90,11 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                     <?php }?>
 
 
+
                     <div class="input-holder">
                         <input type="text" name="full_name" value="<?=$user["full_name"] ?>" class="input-1" placeholder="Full Name"><br><br>
                     </div>
+
 
 
                     <div class="form-1">
@@ -97,7 +111,8 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                         </select><br><br>
                     </div>
 
-                    <!-- Manager assignment dropdown - only shown for employee role, pre-selects current manager -->
+
+                    <!-- Manager assignment dropdown - shown for employee and manager roles, pre-selects current manager, excludes self -->
                     <div class="input-holder" id="manager-field">
                         <select name="manager_id" class="input-1">
                             <option value="">-- No Manager Assigned --</option>
@@ -109,13 +124,16 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                         </select><br><br>
                     </div>
 
+
                     <input type="text" name="id" value="<?=$user["id"]?>" hidden> 
                     <button class="edit-btn">Update</button>
                 </form>
             </section>
 
 
+
         </div>
+
 
 
 
@@ -123,13 +141,17 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
             var active = document.querySelector("#navList li:nth-child(2)"); // Select the second list item in the navigation list
             active.classList.add("active"); // Add the "active" class to the selected list item
 
-            // Show manager field only when role is employee
+
+            // Show manager field only when role is employee or manager
             const roleSelect = document.getElementById('role-select');
             const managerField = document.getElementById('manager-field');
 
+
             function toggleManagerField() {
-                managerField.style.display = roleSelect.value === 'employee' ? 'block' : 'none';
+                const showFor = ['employee', 'manager'];
+                managerField.style.display = showFor.includes(roleSelect.value) ? 'block' : 'none';
             }
+
 
             roleSelect.addEventListener('change', toggleManagerField);
             toggleManagerField(); // run on page load to reflect current role
@@ -137,7 +159,9 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
     </body>
 
 
+
     </html>
+
 
 
 <?php } else {

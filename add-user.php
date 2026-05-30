@@ -112,9 +112,10 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
             const roleSelect = document.getElementById('role-select');
             const managerField = document.getElementById('manager-field');
 
-            function toggleManagerField() {
-                managerField.style.display = roleSelect.value === 'employee' ? 'block' : 'none';
-            }
+        function toggleManagerField() {
+            const showFor = ['employee', 'manager'];
+            managerField.style.display = showFor.includes(roleSelect.value) ? 'block' : 'none';
+        }
 
             roleSelect.addEventListener('change', toggleManagerField);
             toggleManagerField(); // run on page load to set correct initial state

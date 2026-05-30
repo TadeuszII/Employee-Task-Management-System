@@ -27,7 +27,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
         $allowed_roles = ['employee', 'manager', 'admin'];
         $role = isset($_POST['role']) && in_array($_POST['role'], $allowed_roles) ? $_POST['role'] : 'employee';
         $manager_id = null;
-        if ($role === 'employee' && !empty($_POST['manager_id']) && is_numeric($_POST['manager_id'])) {
+        if (in_array($role, ['employee', 'manager']) && !empty($_POST['manager_id']) && is_numeric($_POST['manager_id'])) {
             $manager_id = (int)$_POST['manager_id'];
         }
 

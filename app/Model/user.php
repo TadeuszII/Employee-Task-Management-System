@@ -1,6 +1,26 @@
 <?php
 
 
+
+// ---- Sprawdź czy username już istnieje w bazie ----
+function username_exists($conn, $username, $exclude_id = null)
+{
+    if ($exclude_id) {
+        // Używane przy edycji usera — ignoruje jego własne ID
+        $sql = "SELECT id FROM user WHERE username = ? AND id != ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$username, $exclude_id]);
+    } else {
+        // Używane przy dodawaniu nowego usera
+        $sql = "SELECT id FROM user WHERE username = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$username]);
+    }
+    return $stmt->rowCount() > 0;
+}
+
+
+
 # ---- To show all users employee in the table ----
 function get_all_users($conn){ 
     $sql = "SELECT * FROM user WHERE role =? ";
@@ -22,7 +42,7 @@ function get_all_users($conn){
 // ---- get ALL users for manage_users.php ----
 function get_all_users_admin($conn){
     // LEFT JOIN to fetch the manager's full name alongside each user
-    $sql = "SELECT u.*, m.full_name AS manager_name 
+    $sql = "SELECT u.*, m.full_name AS manager_name, m.role AS manager_role 
             FROM user u
             LEFT JOIN user m ON u.manager_id = m.id
             ORDER BY u.role, u.full_name";
@@ -87,10 +107,16 @@ function get_assignable_users_for_manager($conn, $manager_id){
 }
 
 // ---- For add-user/edit-user: populate the manager_id dropdown (managers + admins) ----
-function get_all_managers_and_admins($conn){
-    $sql = "SELECT * FROM user WHERE role IN ('manager', 'admin') ORDER BY role, full_name";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
+function get_all_managers_and_admins($conn, $exclude_id = null){
+    if ($exclude_id) {
+        $sql = "SELECT * FROM user WHERE role IN ('manager', 'admin') AND id != ? ORDER BY role, full_name";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([$exclude_id]);
+    } else {
+        $sql = "SELECT * FROM user WHERE role IN ('manager', 'admin') ORDER BY role, full_name";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+    }
 
     if ($stmt->rowCount() > 0){
         $users = $stmt->fetchAll();
@@ -156,3 +182,4 @@ function update_profile($conn, $data){
 
 
 }
+
