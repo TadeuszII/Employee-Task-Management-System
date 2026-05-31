@@ -6,7 +6,7 @@
 function username_exists($conn, $username, $exclude_id = null)
 {
     if ($exclude_id) {
-        // Używane przy edycji usera — ignoruje jego własne ID
+        // Używane przy edycji usera - ignoruje jego własne ID
         $sql = "SELECT id FROM user WHERE username = ? AND id != ?";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$username, $exclude_id]);
@@ -41,11 +41,11 @@ function get_all_users($conn){
 
 // ---- get ALL users for manage_users.php ----
 function get_all_users_admin($conn){
-    // LEFT JOIN to fetch the manager's full name alongside each user
-    $sql = "SELECT u.*, m.full_name AS manager_name, m.role AS manager_role 
+    // Changed: alias manager_name → manager_username, use u.username for ordering
+    $sql = "SELECT u.*, m.username AS manager_username, m.role AS manager_role 
             FROM user u
             LEFT JOIN user m ON u.manager_id = m.id
-            ORDER BY u.role, u.full_name";
+            ORDER BY u.role, u.username";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
 
@@ -56,15 +56,12 @@ function get_all_users_admin($conn){
     }
     return $users;
 }
-
-
 
 // ---- To show all users employee and manager in the table for assign task ----
 function get_all_assignable_users($conn){
-    $sql = "SELECT * FROM user WHERE role IN ('employee', 'manager') ORDER BY role, full_name";
+    $sql = "SELECT * FROM user WHERE role IN ('employee', 'manager') ORDER BY role, username";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
-
 
     if ($stmt->rowCount() > 0){
         $users = $stmt->fetchAll();
@@ -74,10 +71,9 @@ function get_all_assignable_users($conn){
     return $users;
 }
 
-
 // ---- Admin task assignment: all employees + all managers (NO admins) ----
 function get_all_assignable_users_admin($conn){
-    $sql = "SELECT * FROM user WHERE role IN ('employee', 'manager') ORDER BY role, full_name";
+    $sql = "SELECT * FROM user WHERE role IN ('employee', 'manager') ORDER BY role, username";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
 
@@ -94,7 +90,7 @@ function get_assignable_users_for_manager($conn, $manager_id){
     $sql = "SELECT * FROM user 
             WHERE (role = 'employee' AND manager_id = ?)
                OR (role = 'manager' AND id != ?)
-            ORDER BY role, full_name";
+            ORDER BY role, username";
     $stmt = $conn->prepare($sql);
     $stmt->execute([$manager_id, $manager_id]);
 
@@ -109,11 +105,11 @@ function get_assignable_users_for_manager($conn, $manager_id){
 // ---- For add-user/edit-user: populate the manager_id dropdown (managers + admins) ----
 function get_all_managers_and_admins($conn, $exclude_id = null){
     if ($exclude_id) {
-        $sql = "SELECT * FROM user WHERE role IN ('manager', 'admin') AND id != ? ORDER BY role, full_name";
+        $sql = "SELECT * FROM user WHERE role IN ('manager', 'admin') AND id != ? ORDER BY role, username";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$exclude_id]);
     } else {
-        $sql = "SELECT * FROM user WHERE role IN ('manager', 'admin') ORDER BY role, full_name";
+        $sql = "SELECT * FROM user WHERE role IN ('manager', 'admin') ORDER BY role, username";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
     }
@@ -183,3 +179,14 @@ function update_profile($conn, $data){
 
 }
 
+// ---- To get direct reports of a manager (employees + managers with this manager as their manager_id) ----
+function get_direct_reports($conn, $admin_id) {
+    $sql = "SELECT * FROM user WHERE manager_id = ? AND role IN ('employee', 'manager') ORDER BY role, full_name";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([$admin_id]);
+
+    if ($stmt->rowCount() > 0) {
+        return $stmt->fetchAll();
+    }
+    return [];
+}

@@ -222,8 +222,9 @@ function get_tasks_scoped($conn, $role, $id, $filter = null, $extra = null){
         $scope = "1=1";
         $params = [];
     } elseif ($role === 'manager') {
-        $scope = "(assigned_to = ? OR assigned_to IN (SELECT id FROM user WHERE manager_id = ?))";
-        $params = [$id, $id];
+        // menedżer widzi tylko zadania swoich podwładnych
+        $scope = "assigned_to IN (SELECT id FROM user WHERE manager_id = ?)";
+        $params = [$id];
     } else {
         $scope = "assigned_to = ?";
         $params = [$id];
@@ -255,5 +256,54 @@ function get_tasks_scoped($conn, $role, $id, $filter = null, $extra = null){
     return $stmt->rowCount() > 0 ? $stmt->fetchAll() : 0;
 }
 
+//  ---- Pobranie zadań przypisanych do bezpośrednich podwładnych admina (manager_id = admin_id) ---- 
+function get_tasks_by_team($conn, $admin_id, $filter = null, $extra = null) {
+    switch ($filter) {
+        case 'due_today':
+            $sql = "SELECT * FROM tasks WHERE assigned_to IN (SELECT id FROM user WHERE manager_id = ?) AND due_date = CURDATE() ORDER BY id DESC";
+            $params = [$admin_id];
+            break;
+        case 'overdue':
+            $sql = "SELECT * FROM tasks WHERE assigned_to IN (SELECT id FROM user WHERE manager_id = ?) AND due_date < CURDATE() AND NOT (due_date IS NULL OR due_date = '0000-00-00') AND STATUS != 'completed' ORDER BY id DESC";
+            $params = [$admin_id];
+            break;
+        case 'no_deadline':
+            $sql = "SELECT * FROM tasks WHERE assigned_to IN (SELECT id FROM user WHERE manager_id = ?) AND (due_date IS NULL OR due_date = '0000-00-00') ORDER BY id DESC";
+            $params = [$admin_id];
+            break;
+        case 'status':
+            $sql = "SELECT * FROM tasks WHERE assigned_to IN (SELECT id FROM user WHERE manager_id = ?) AND status = ? ORDER BY id DESC";
+            $params = [$admin_id, $extra];
+            break;
+        // Single employee filters (extra = employee_id)
+        case 'employee':
+            $sql = "SELECT * FROM tasks WHERE assigned_to = ? ORDER BY id DESC";
+            $params = [$extra];
+            break;
+        case 'employee_due_today':
+            $sql = "SELECT * FROM tasks WHERE assigned_to = ? AND due_date = CURDATE() ORDER BY id DESC";
+            $params = [$extra];
+            break;
+        case 'employee_overdue':
+            $sql = "SELECT * FROM tasks WHERE assigned_to = ? AND due_date < CURDATE() AND NOT (due_date IS NULL OR due_date = '0000-00-00') AND STATUS != 'completed' ORDER BY id DESC";
+            $params = [$extra];
+            break;
+        case 'employee_no_deadline':
+            $sql = "SELECT * FROM tasks WHERE assigned_to = ? AND (due_date IS NULL OR due_date = '0000-00-00') ORDER BY id DESC";
+            $params = [$extra];
+            break;
+        case 'employee_status':
+            // $extra = [$employee_id, $status]
+            $sql = "SELECT * FROM tasks WHERE assigned_to = ? AND status = ? ORDER BY id DESC";
+            $params = [$extra[0], $extra[1]];
+            break;
+        default:
+            $sql = "SELECT * FROM tasks WHERE assigned_to IN (SELECT id FROM user WHERE manager_id = ?) ORDER BY id DESC";
+            $params = [$admin_id];
+    }
 
+    $stmt = $conn->prepare($sql);
+    $stmt->execute($params);
+    return $stmt->rowCount() > 0 ? $stmt->fetchAll() : 0;
+}
 

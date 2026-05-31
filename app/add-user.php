@@ -18,7 +18,7 @@ if (isset($_POST['user_name']) && isset($_POST['password']) && isset($_POST['ful
     }
 
 
-    $user_name = trim($_POST['user_name']); // trim only — htmlspecialchars breaks username comparison with DB
+    $user_name = trim($_POST['user_name']); // trim only - htmlspecialchars breaks username comparison with DB
     $password = validate_input($_POST['password']);
     $full_name = validate_input($_POST['full_name']);
     $allowed_roles = ['employee', 'manager', 'admin'];

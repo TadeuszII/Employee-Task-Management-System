@@ -19,6 +19,7 @@ if (isset($_POST['title']) && isset($_POST['description']) && isset($_POST['assi
     $description = validate_input($_POST['description']);
     $assigned_to = validate_input($_POST['assigned_to']);
     $due_date = validate_input($_POST['due_date']);
+    $due_date = empty($due_date) ? null : $due_date; // ustawienie na null jeśli data jest pusta
     if (empty($title)) { // Check if the title field is empty
         $error_message = "Title is required";
         header('Location: ../create_task.php?error=' . $error_message);

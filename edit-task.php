@@ -121,7 +121,9 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
                             <?php 
                             if ($users != 0)
                                 foreach($users as $user) { ?>
-                                    <option value="<?=$user['id']?>" <?php echo ($task['assigned_to'] == $user['id']) ? 'selected' : ''; ?>><?=$user['full_name']?> (<?=$user['role']?>)</option>
+                                    <option value="<?=$user['id']?>" <?php echo ($task['assigned_to'] == $user['id']) ? 'selected' : ''; ?>>
+                                        <?= htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8') ?> (<?= $user['role'] ?>)
+                                    </option>
                             <?php } ?>
                         </select><br><br>
                     </div>

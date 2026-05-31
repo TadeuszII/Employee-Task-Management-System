@@ -64,8 +64,8 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
                 header('Location: ../edit_profile.php?error=Invalid file type. Allowed: jpg, png, webp');
                 exit();
             }
-            if ($size > 2 * 1024 * 1024) {
-                header('Location: ../edit_profile.php?error=File too large. Maximum size is 2MB');
+            if ($size > 25 * 1024 * 1024) {
+                header('Location: ../edit_profile.php?error=The file is too large. Maximum size is 25MB');
                 exit();
             }
 
@@ -90,7 +90,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) {
                 $stmt->execute([$full_name, $hashed_password, $id]);
             }
         } else {
-            // Tylko full_name i/lub zdjęcie — hasło bez zmian
+            // Tylko full_name i/lub zdjęcie - hasło bez zmian
             if ($profile_picture_name) {
                 $stmt = $conn->prepare("UPDATE user SET full_name=?, profile_picture=? WHERE id=?");
                 $stmt->execute([$full_name, $profile_picture_name, $id]);

@@ -134,7 +134,8 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
 
             </section>
         </div>
-
+        <!-- skrypt do sortowania tabeli -->
+        <script src="js/table-sorter.js"></script>
     </body>
 
     </html>

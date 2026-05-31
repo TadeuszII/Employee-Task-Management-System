@@ -22,6 +22,7 @@ if (isset($_POST['id']) && isset($_POST['title']) && isset($_POST['description']
     $assigned_to = validate_input($_POST['assigned_to']);
     $id = (int)$_POST['id'];
     $due_date = validate_input($_POST['due_date']);
+    $due_date = empty($due_date) ? null : $due_date; // ustawienie na null jeśli data jest pusta
 
 
     // manager can only update tasks they created 
@@ -42,10 +43,6 @@ if (isset($_POST['id']) && isset($_POST['title']) && isset($_POST['description']
         $error_message = "Description is required";
         header('Location: ../edit-task.php?id=' . $id . '&error=' . $error_message);
         exit();
-    }else if (empty($due_date)) { // Check if the due_date field is empty
-        $error_message = "Due Date is required";
-        header('Location: ../edit-task.php?id=' . $id . '&error=' . $error_message);
-        exit();
     }else if ($assigned_to == 0) { // Check if the assigned_to field is empty
         $error_message = "Assigned To is required";
         header('Location: ../edit-task.php?id=' . $id . '&error=' . $error_message);
@@ -53,15 +50,26 @@ if (isset($_POST['id']) && isset($_POST['title']) && isset($_POST['description']
     }
     else { // If both fields are filled, proceed with database verification
 
+        include "Model/user.php"; // pobranie modelu użytkownika do odczytania full_name
+        include "Model/notification.php"; // pobranie modelu powiadomień
+
+        // pobranie pełnego imienia i nazwiska osoby edytującej
+        $user_updater = get_user_by_id($conn, $_SESSION['id']);
+        $full_name = $user_updater ? $user_updater['full_name'] : 'Unknown User';
 
         $data = array($title, $description, $assigned_to, $due_date, $id);
         update_task($conn, $data);
 
+        // wysłanie powiadomienia do przypisanego pracownika o edycji zadania (jeśli to nie jest ta sama osoba)
+        if ($assigned_to != $_SESSION['id']) {
+            $msg = $full_name . " updated the task '" . $title . "'.";
+            $notification_data = array($msg, $assigned_to, 'Task Updated');
+            insert_notifications($conn, $notification_data);
+        }
 
         $error_message = "Task updated successfully"; # Using error message to show success message
         header('Location: ../edit-task.php?id=' . $id . '&success=' . $error_message);
         exit();
-
 
     }
 } else { // If the username or password fields are not set, redirect back to the login page with an error message

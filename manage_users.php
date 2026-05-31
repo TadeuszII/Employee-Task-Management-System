@@ -60,8 +60,8 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
                             <td><?=$user['username'] ?></td>
                             <td><?=$user['role'] ?></td>
                             <td>
-                                <?php if (!empty($user['manager_name'])) { ?>
-                                    <?= htmlspecialchars($user['manager_name'], ENT_QUOTES, 'UTF-8') ?> (<?= htmlspecialchars($user['manager_role'], ENT_QUOTES, 'UTF-8') ?>)
+                                <?php if (!empty($user['manager_username'])) { ?>
+                                    <?= htmlspecialchars($user['manager_username'], ENT_QUOTES, 'UTF-8') ?> (<?= htmlspecialchars($user['manager_role'], ENT_QUOTES, 'UTF-8') ?>)
                                 <?php } else { ?>
                                     <span>None</span>
                                 <?php } ?>
@@ -86,6 +86,8 @@ if (isset($_SESSION['role']) && isset($_SESSION['id'])) { // Check if the user i
             var active = document.querySelector("#navList li:nth-child(2)"); // Select the second list item in the navigation list
             active.classList.add("active"); // Add the "active" class to the selected list item
         </script>
+        <!-- skrypt do sortowania tabeli -->
+        <script src="js/table-sorter.js"></script>
     </body>
 
     </html>

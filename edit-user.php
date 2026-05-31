@@ -115,13 +115,13 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                     <!-- Manager assignment dropdown - shown for employee and manager roles, pre-selects current manager, excludes self -->
                     <div class="input-holder" id="manager-field">
                         <select name="manager_id" class="input-1">
-                            <option value="">-- No Manager Assigned --</option>
-                            <?php if ($supervisors != 0) foreach($supervisors as $s) { ?>
-                                <option value="<?= $s['id'] ?>" <?= $user['manager_id'] == $s['id'] ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($s['full_name'], ENT_QUOTES, 'UTF-8') ?> (<?= $s['role'] ?>)
-                                </option>
-                            <?php } ?>
-                        </select><br><br>
+                        <option value="">-- No Manager Assigned --</option>
+                        <?php if ($supervisors != 0) foreach($supervisors as $s) { ?>
+                            <option value="<?= $s['id'] ?>" <?= $user['manager_id'] == $s['id'] ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($s['username'], ENT_QUOTES, 'UTF-8') ?> (<?= $s['role'] ?>)
+                            </option>
+                        <?php } ?>
+                    </select><br><br>
                     </div>
 
 

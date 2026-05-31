@@ -89,7 +89,7 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && $_SESSION['role'] == '
                             <option value="">-- No Manager Assigned --</option>
                             <?php if ($supervisors != 0) foreach($supervisors as $s) { ?>
                                 <option value="<?= $s['id'] ?>">
-                                    <?= htmlspecialchars($s['full_name'], ENT_QUOTES, 'UTF-8') ?> (<?= $s['role'] ?>)
+                                    <?= htmlspecialchars($s['username'], ENT_QUOTES, 'UTF-8') ?> (<?= $s['role'] ?>)
                                 </option>
                             <?php } ?>
                         </select><br><br>

@@ -31,19 +31,35 @@ if (isset($_SESSION['role']) && isset($_SESSION['id']) && in_array($_SESSION['ro
             <?php include "inc/nav.php"; ?> <!-- Include the navigation -->
             <section class="section-1">
                 <h4 class="title">Profile <a href="edit_profile.php">Edit Profile</a></h4>
-                <table class="main-table" style="max-width: 300px;">
+                <table class="main-table" style="max-width: 300px; margin-left: 0;">
                     <tr>
                         <td>Full Name</td>
-                        <td><?= $user['full_name'] ?></td>
+                        <td><?= htmlspecialchars($user['full_name']) ?></td>
                     </tr>
                     <tr>
                         <td>Username</td>
-                        <td><?= $user['username'] ?></td>
+                        <td><?= htmlspecialchars($user['username']) ?></td>
                     </tr>
                     <tr>
                         <td>Team joining date</td>
-                        <!-- Also show how much day has passed from joined date -->
-                        <td><?= $user['created_at'] ?> (<?= floor((time() - strtotime($user['created_at'])) / (60 * 60 * 24)) ?> days ago)</td>
+                        <!-- Wyświetlanie poprawnej daty i liczby dni od dołączenia -->
+                        <td>
+                            <?php 
+                            $joined_date = strtotime($user['created_at']);
+                            $diff_seconds = time() - $joined_date;
+                            $diff_days = floor($diff_seconds / (60 * 60 * 24));
+                            
+                            $days_text = "";
+                            if ($diff_days <= 0) {
+                                $days_text = "today";
+                            } else if ($diff_days == 1) {
+                                $days_text = "1 day ago";
+                            } else {
+                                $days_text = $diff_days . " days ago";
+                            }
+                            ?>
+                            <?= htmlspecialchars($user['created_at']) ?> (<?= $days_text ?>)
+                        </td>
                     </tr>
                 </table>
             </section>
